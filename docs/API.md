@@ -421,3 +421,8 @@ color = true
 ```
 
 Both honor access policy for secrets and exportability.
+
+
+## Struct bindings
+
+`StructBinding<T>` reads a scoped `ConfigView` into an ordinary C++ struct. It supports explicit field binders for strings, booleans, integers, and doubles, including required fields and fallback values. See `docs/BINDINGS.md`.

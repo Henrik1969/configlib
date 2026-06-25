@@ -12,4 +12,5 @@
 #include <configlib/store.hpp>
 #include <configlib/value.hpp>
 #include <configlib/view.hpp>
+#include <configlib/binding.hpp>
 #include <configlib/version.hpp>

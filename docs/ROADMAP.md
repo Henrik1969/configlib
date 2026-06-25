@@ -116,3 +116,8 @@ The informal author/development note lives in `docs/AUTHOR_NOTE.md`.
 ## Documentation status
 
 Programmer manual added in v0.5.5. Future releases should keep language-binding examples aligned with the C ABI and any official binding packages.
+
+
+## Completed in v0.6.0
+
+- Explicit typed binding helpers over `ConfigView`.

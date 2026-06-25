@@ -1,4 +1,4 @@
-# configlib v0.5.5
+# configlib v0.6.0
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,7 +6,7 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.5.5 is a documentation patch on top of v0.5.4. It adds a practical programmer's manual with usage examples in C++, C, Python, Rust, Zig, LuaJIT, and shell integration patterns while preserving the v0.5 scoped-view feature set.
+v0.6.0 adds explicit typed struct bindings over scoped `ConfigView`s, while preserving the fact/policy/resolver/store/view architecture from earlier releases.
 
 v0.5 extends v0.4 with scoped subtree views:
 
@@ -104,3 +104,5 @@ See `docs/`. Start with:
 - `docs/VIEWS.md`
 - `docs/PLUGIN_MODEL.md`
 - `docs/CHANGELOG.md`
+
+- [Struct bindings](docs/BINDINGS.md)

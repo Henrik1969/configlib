@@ -596,4 +596,25 @@ Then redacted/export modes can protect them.
 
 ## Version note
 
-This manual describes `configlib` v0.5.5. The C ABI is intentionally narrower than the C++ API at this stage. Some language examples are binding sketches that show intended usage over the C ABI; they are not official packages yet.
+This manual describes `configlib` v0.6.0. The C ABI is intentionally narrower than the C++ API at this stage. Some language examples are binding sketches that show intended usage over the C ABI; they are not official packages yet.
+
+
+## Typed struct bindings
+
+For C++ subsystem code, `StructBinding<T>` can read a `ConfigView` into a plain struct.
+
+```cpp
+struct LoggingConfig {
+    std::string level;
+    bool color;
+};
+
+configlib::StructBinding<LoggingConfig> binding("LoggingConfig");
+binding
+    .string(configlib::KeyPath("level"), &LoggingConfig::level, "info")
+    .boolean(configlib::KeyPath("color"), &LoggingConfig::color, true);
+
+auto cfg_result = binding.read(store.view(configlib::KeyPath("xyz.logging")));
+```
+
+Bindings are snapshots. Runtime mutation still belongs to `ConfigStore` transactions.

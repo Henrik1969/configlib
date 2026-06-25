@@ -279,3 +279,8 @@ configlib is for governed application configuration.
 `configlib` is released under the MIT License. See `LICENSE` and `docs/LICENSE.md`.
 
 For the less formal project/release spirit and AI-assisted development acknowledgement, see `docs/AUTHOR_NOTE.md`.
+
+
+## Struct bindings
+
+Struct bindings project a scoped `ConfigView` into an ordinary C++ struct for subsystem convenience. They are snapshots, not the canonical store. Bindings are convenience projections; `ConfigStore` remains the source of governed truth.

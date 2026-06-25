@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.6.0
+
+Feature patch on top of v0.5.5.
+
+Added:
+
+- `include/configlib/binding.hpp`.
+- `StructBinding<T>` and `BindingResult<T>`.
+- Explicit string, bool, int, int64_t, and double field binders.
+- Required-field and type-mismatch diagnostics.
+- `examples/bindings.cpp`.
+- `tests/test_bindings.cpp`.
+- `docs/BINDINGS.md`.
+
+Changed:
+
+- README and programmer manual now describe typed struct binding usage.
+- Project version metadata to `0.6.0`.
+
+Design rule: bindings are convenience projections; `ConfigStore` remains the source of governed truth.
+
 ## v0.5.5
 
 Documentation patch on top of v0.5.4.

@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(configlib
-    VERSION 0.5.5
+    VERSION 0.6.0
     DESCRIPTION "Policy and fact driven configuration resolution library"
     LANGUAGES C CXX
 )
@@ -20,6 +20,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CONFIGLIB_PUBLIC_HEADERS
     include/configlib/configlib.hpp
     include/configlib/configlib.h
+    include/configlib/binding.hpp
     include/configlib/diagnostic.hpp
     include/configlib/fact.hpp
     include/configlib/key.hpp
@@ -95,6 +96,9 @@ if(CONFIGLIB_BUILD_EXAMPLES)
     add_executable(configlib_views_cpp examples/views.cpp)
     target_link_libraries(configlib_views_cpp PRIVATE ${CONFIGLIB_LINK_TARGET})
 
+    add_executable(configlib_bindings_cpp examples/bindings.cpp)
+    target_link_libraries(configlib_bindings_cpp PRIVATE ${CONFIGLIB_LINK_TARGET})
+
     add_executable(configlib_basic_c examples/c_basic.c)
     target_link_libraries(configlib_basic_c PRIVATE ${CONFIGLIB_LINK_TARGET})
     set_target_properties(configlib_basic_c PROPERTIES LINKER_LANGUAGE CXX)
@@ -122,6 +126,10 @@ if(CONFIGLIB_BUILD_TESTS)
     add_executable(configlib_tests_views tests/test_views.cpp)
     target_link_libraries(configlib_tests_views PRIVATE ${CONFIGLIB_LINK_TARGET})
     add_test(NAME configlib_tests_views COMMAND configlib_tests_views)
+
+    add_executable(configlib_tests_bindings tests/test_bindings.cpp)
+    target_link_libraries(configlib_tests_bindings PRIVATE ${CONFIGLIB_LINK_TARGET})
+    add_test(NAME configlib_tests_bindings COMMAND configlib_tests_bindings)
 
     add_executable(configlib_tests_c tests/test_c_api.c)
     target_link_libraries(configlib_tests_c PRIVATE ${CONFIGLIB_LINK_TARGET})
