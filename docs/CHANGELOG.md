@@ -1,5 +1,61 @@
 # Changelog
 
+## v0.5.5
+
+Documentation patch on top of v0.5.4.
+
+Added:
+
+- `docs/Programmers_Manual.md` with practical usage guidance.
+- C++ application setup example.
+- C ABI example.
+- Python `ctypes` binding sketch.
+- Rust FFI sketch.
+- Zig C-import sketch.
+- LuaJIT FFI sketch.
+- Shell integration pattern and project layout notes.
+- Common mistakes section covering fallback defaults, precedence, scoped views, and secrets.
+
+Changed:
+
+- README documentation index now points to the programmer manual.
+- Project version metadata to `0.5.5`.
+
+## v0.5.4
+
+Documentation-only patch.
+
+Added:
+
+- `docs/AUTHOR_NOTE.md` with an informal author note, friendly request for mentions/comments, and AI-assisted development acknowledgement.
+
+Updated:
+
+- README and documentation links to point at the author note.
+- Project version metadata to `0.5.4`.
+
+The MIT License remains the only legal license condition.
+
+## v0.5.3
+
+Documentation/legal patch.
+
+- Updated the MIT license copyright holder to `Henrik Sørensen`.
+- Updated project version metadata to `0.5.3`.
+
+## v0.5.2
+
+Documentation/legal patch.
+
+Added:
+
+- root `LICENSE` file using the MIT License
+- README license section
+- source-file SPDX markers: `SPDX-License-Identifier: MIT`
+- `docs/LICENSE.md` with licensing notes
+
+Updated project version metadata to `0.5.2`.
+
 ## v0.5.1
 
 Documentation-only patch.

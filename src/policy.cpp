@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 #include <configlib/policy.hpp>
 
 namespace configlib {

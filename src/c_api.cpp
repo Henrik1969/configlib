@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 #include <configlib/configlib.h>
 #include <configlib/configlib.hpp>
 

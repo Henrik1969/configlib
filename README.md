@@ -1,10 +1,12 @@
-# configlib v0.5
+# configlib v0.5.5
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
 It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
+
+v0.5.5 is a documentation patch on top of v0.5.4. It adds a practical programmer's manual with usage examples in C++, C, Python, Rust, Zig, LuaJIT, and shell integration patterns while preserving the v0.5 scoped-view feature set.
 
 v0.5 extends v0.4 with scoped subtree views:
 
@@ -76,9 +78,23 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 
 Use `configlib` when configuration becomes a governed runtime concern: defaults, files, environment, CLI, runtime overrides, validation, precedence, provenance, scoped subsystem views, export policy, and diagnostics. See [`docs/WHEN_TO_USE.md`](docs/WHEN_TO_USE.md).
 
+## License
+
+`configlib` is released under the MIT License. See [`LICENSE`](LICENSE).
+
+There is also an informal author/development note in [`docs/AUTHOR_NOTE.md`](docs/AUTHOR_NOTE.md). It is not an extra license condition; it explains the spirit of the release and acknowledges AI-assisted development.
+
+Source files carry the short SPDX marker:
+
+```text
+SPDX-License-Identifier: MIT
+```
+
 ## Documentation
 
 See `docs/`. Start with:
+
+- `docs/Programmers_Manual.md`
 
 - `docs/ARCHITECTURE.md`
 - `docs/API.md`

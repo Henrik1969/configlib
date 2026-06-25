@@ -272,3 +272,10 @@ The architecture becomes useful when configuration has several fact sources, exp
 argv parsing is for command invocation.
 configlib is for governed application configuration.
 ```
+
+
+## Licensing
+
+`configlib` is released under the MIT License. See `LICENSE` and `docs/LICENSE.md`.
+
+For the less formal project/release spirit and AI-assisted development acknowledgement, see `docs/AUTHOR_NOTE.md`.

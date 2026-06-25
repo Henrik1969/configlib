@@ -104,3 +104,15 @@ The mechanism should remain replaceable as long as the fact/policy/result/store/
 ## Non-goal reminder
 
 `configlib` should remain a power tool, not framework tax. Future versions must preserve the boundary documented in `WHEN_TO_USE.md`: do not force the library into tiny programs where plain argument parsing is cleaner.
+
+
+## Licensing
+
+`configlib` is released under the MIT License. See `LICENSE` and `docs/LICENSE.md`.
+
+The informal author/development note lives in `docs/AUTHOR_NOTE.md`.
+
+
+## Documentation status
+
+Programmer manual added in v0.5.5. Future releases should keep language-binding examples aligned with the C ABI and any official binding packages.

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 #include <configlib/loaders.hpp>
 
 #include <algorithm>

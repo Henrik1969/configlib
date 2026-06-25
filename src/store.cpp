@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 #include <configlib/store.hpp>
 #include <configlib/view.hpp>
 
