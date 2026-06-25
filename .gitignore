@@ -1,0 +1,35 @@
+# Build output
+build/
+cmake-build-*/
+out/
+
+# CMake/Ninja generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+*.ninja
+.ninja_*
+
+# Object/library/binary artifacts
+*.o
+*.a
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+
+# Editor/IDE noise
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archives/packages
+*.tar.gz
+*.zip
+*.patch
