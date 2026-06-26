@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.10.0
+
+Packaging/install hardening release.
+
+Added:
+
+- CMake install rules for headers and enabled library targets.
+- Exported CMake package files under `lib/cmake/configlib`.
+- Installed imported targets: `configlib::configlib`, `configlib::shared`, and `configlib::static`.
+- `pkgconfig/configlib.pc.in` and installed `configlib.pc`.
+- `cmake/configlibConfig.cmake.in`.
+- `docs/PACKAGING.md`.
+
+Updated:
+
+- README build/install section.
+- `docs/BUILDING.md` with install and sanitizer examples.
+- `docs/HOWTO.md` with dependency-consumption notes.
+- `docs/PUBLIC_API_MAP.md` with packaging files.
+- `docs/ROADMAP.md` to mark v0.10.0 complete.
+- Project version to `0.10.0`.
+
+Design note: v0.10.0 changes no configuration behavior. It strengthens the dependency-consumption and install story before the API-freeze track.
+
 ## v0.9.1
 
 Fire-testing roadmap release on top of v0.9.0.

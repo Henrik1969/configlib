@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(configlib
-    VERSION 0.9.1
+    VERSION 0.10.0
     DESCRIPTION "Policy and fact driven configuration resolution library"
     LANGUAGES C CXX
 )
@@ -13,6 +13,10 @@ option(CONFIGLIB_BUILD_STATIC "Build static library" ON)
 option(CONFIGLIB_BUILD_EXAMPLES "Build examples" ON)
 option(CONFIGLIB_BUILD_TESTS "Build tests" ON)
 option(CONFIGLIB_BUILD_DOCS "Add a Doxygen documentation target when Doxygen is available" OFF)
+
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -53,7 +57,9 @@ set(CONFIGLIB_SOURCES
 )
 
 add_library(configlib_objects OBJECT ${CONFIGLIB_SOURCES} ${CONFIGLIB_PUBLIC_HEADERS})
-target_include_directories(configlib_objects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(configlib_objects PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 target_compile_features(configlib_objects PUBLIC cxx_std_20)
 target_compile_options(configlib_objects PRIVATE
     $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic>
@@ -62,18 +68,32 @@ set_target_properties(configlib_objects PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(CONFIGLIB_BUILD_SHARED)
     add_library(configlib_shared SHARED $<TARGET_OBJECTS:configlib_objects>)
-    target_include_directories(configlib_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_include_directories(configlib_shared PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+    target_compile_features(configlib_shared PUBLIC cxx_std_20)
     set_target_properties(configlib_shared PROPERTIES
         OUTPUT_NAME configlib
         VERSION ${PROJECT_VERSION}
         SOVERSION 0
+        EXPORT_NAME shared
     )
+    add_library(configlib::shared ALIAS configlib_shared)
 endif()
 
 if(CONFIGLIB_BUILD_STATIC)
     add_library(configlib_static STATIC $<TARGET_OBJECTS:configlib_objects>)
-    target_include_directories(configlib_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    set_target_properties(configlib_static PROPERTIES OUTPUT_NAME configlib)
+    target_include_directories(configlib_static PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+    target_compile_features(configlib_static PUBLIC cxx_std_20)
+    set_target_properties(configlib_static PROPERTIES
+        OUTPUT_NAME configlib
+        EXPORT_NAME static
+    )
+    add_library(configlib::static ALIAS configlib_static)
 endif()
 
 set(CONFIGLIB_LINK_TARGET configlib_objects)
@@ -82,6 +102,63 @@ if(CONFIGLIB_BUILD_STATIC)
 elseif(CONFIGLIB_BUILD_SHARED)
     set(CONFIGLIB_LINK_TARGET configlib_shared)
 endif()
+
+
+set(CONFIGLIB_INSTALL_TARGETS)
+if(CONFIGLIB_BUILD_SHARED)
+    list(APPEND CONFIGLIB_INSTALL_TARGETS configlib_shared)
+endif()
+if(CONFIGLIB_BUILD_STATIC)
+    list(APPEND CONFIGLIB_INSTALL_TARGETS configlib_static)
+endif()
+
+install(DIRECTORY include/configlib
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+if(CONFIGLIB_INSTALL_TARGETS)
+    install(TARGETS ${CONFIGLIB_INSTALL_TARGETS}
+        EXPORT configlibTargets
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+
+    install(EXPORT configlibTargets
+        NAMESPACE configlib::
+        FILE configlibTargets.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/configlib
+    )
+endif()
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/configlibConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/configlibConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/configlib
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/configlibConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/configlibConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/configlibConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/configlib
+)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/pkgconfig/configlib.pc.in
+    ${CMAKE_CURRENT_BINARY_DIR}/configlib.pc
+    @ONLY
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/configlib.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
 
 if(CONFIGLIB_BUILD_DOCS)
     find_package(Doxygen QUIET)

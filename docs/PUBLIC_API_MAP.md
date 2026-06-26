@@ -1,6 +1,6 @@
 # Public API map
 
-This document gives a quick orientation map for the public `configlib` API as of `v0.9.1`.
+This document gives a quick orientation map for the public `configlib` API as of `v0.10.0`.
 
 ## Core data
 
@@ -62,6 +62,16 @@ Bindings are convenience projections. They are not the source of governed truth.
 
 The v0.9 C ABI covers the non-template core: facts, policy construction, resolution, diagnostics, schema validation, access policy, store creation, transactions, scoped views, export, file/env/CLI loading, and scalar getters. C++ templates such as `StructBinding<T>` remain C++-only by design. See [`C_ABI.md`](C_ABI.md).
 
+## Packaging and installed consumption
+
+- `cmake/configlibConfig.cmake.in` — template for the installed CMake package file.
+- `pkgconfig/configlib.pc.in` — template for the installed pkg-config metadata.
+- Installed CMake targets:
+  - `configlib::configlib` — convenience target; shared if available, otherwise static.
+  - `configlib::shared` — shared library target when installed.
+  - `configlib::static` — static library target when installed.
+
+See [`PACKAGING.md`](PACKAGING.md) for install and consumer examples.
 
 For vocabulary and conceptual definitions, see [`TERMINOLOGY.md`](TERMINOLOGY.md). For a newcomer-friendly explanation, see [`EXPLAINED_SIMPLY.md`](EXPLAINED_SIMPLY.md).
 

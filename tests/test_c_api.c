@@ -12,8 +12,8 @@
 
 int main(void) {
     REQUIRE(configlib_version_major() == 0);
-    REQUIRE(configlib_version_minor() == 9);
-    REQUIRE(configlib_version_patch() == 1);
+    REQUIRE(configlib_version_minor() == 10);
+    REQUIRE(configlib_version_patch() == 0);
 
     configlib_ctx* ctx = configlib_create();
     REQUIRE(ctx != NULL);

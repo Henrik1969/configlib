@@ -1,5 +1,26 @@
 # Roadmap
 
+## v0.10.0 completed
+
+- Added CMake install rules for headers and enabled static/shared library targets.
+- Added exported CMake package support under `lib/cmake/configlib`.
+- Added installed imported targets: `configlib::configlib`, `configlib::shared`, and `configlib::static`.
+- Added pkg-config metadata through `configlib.pc`.
+- Added `docs/PACKAGING.md`.
+- Updated build/HOWTO documentation for local-prefix installs and dependency consumption.
+- Kept v0.10.0 behavior-neutral so the next track can focus on API freeze review.
+
+## Next: v0.11 API freeze candidate
+
+The next recommended phase is a final public-surface review before fire testing:
+
+- C++ public header naming audit.
+- C ABI naming/ownership audit.
+- Include hygiene review.
+- Deprecated/awkward symbols identified before v1.
+- Confirm examples use the preferred API shape.
+- Confirm docs match the actual API.
+
 ## v0.8.5 completed
 
 - Added `docs/MACHINE_CONFIGURATION_ROADMAP.md`.
@@ -33,26 +54,6 @@ Recommended stabilization track:
 - `v1.0.0` — first stable release.
 
 See `FIRE_TESTING.md` for the v0.13 trial-by-fire checklist.
-
-## Next: v0.10 packaging, install, and hardening
-
-The next recommended phase is to make the library easier and safer to consume as a dependency.
-
-Focus areas:
-
-- facts and fact sets
-- policy construction
-- resolver access
-- diagnostics
-- resolved-config getters
-- schema construction and validation
-- store creation and access
-- transactions
-- scoped views
-- export functions
-- explicit ownership/lifetime rules for all C handles and returned strings
-
-Do not start plugin ABI, live reload, watcher integration, config-law packages, or machine-management tools until the C ABI stability island exists.
 
 ## Post-v1 railroad: configuration tools and machine governance
 

@@ -1,4 +1,4 @@
-# configlib v0.9.1
+# configlib v0.10.0
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,7 +6,7 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.9.1 is a roadmap/documentation release on top of v0.9.0. It adds the fire-testing plan for the pre-v1 hardening track: hostile inputs, conflict edge cases, C ABI abuse tests, sanitizer runs, export/redaction safety, and failure semantics.
+v0.10.0 is a packaging/install hardening release on top of v0.9.x. It adds CMake install rules, an exported CMake package, a pkg-config file, and packaging documentation so the library can be consumed as a normal dependency.
 
 Important current capabilities include:
 
@@ -19,6 +19,7 @@ Important current capabilities include:
 - full-path scoped export
 - local scoped export with the prefix stripped
 - view example and tests
+- installed headers, libraries, CMake package files, and pkg-config metadata
 - updated documentation and changelog
 
 The important rule still holds: `ConfigStore` is the governed runtime vault; `ConfigView` is a scoped keyhole into one subtree of that vault.
@@ -29,6 +30,7 @@ The important rule still holds: `ConfigStore` is the governed runtime vault; `Co
 cmake -S . -B build -G Ninja
 cmake --build build -j20
 ctest --test-dir build --output-on-failure
+cmake --install build --prefix "$PWD/install"
 ```
 
 
@@ -64,6 +66,8 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 
 - C++20 library
 - Static and shared build targets
+- CMake install/export support
+- pkg-config metadata
 - Expanded opaque C ABI for binding languages
 - Scalar value model: null, bool, int64, double, string
 - Dotted key paths
@@ -117,6 +121,7 @@ SPDX-License-Identifier: MIT
 See `docs/`. Start with:
 
 - `docs/HOWTO.md`
+- `docs/PACKAGING.md`
 - `docs/FIRE_TESTING.md`
 - `docs/MACHINE_CONFIGURATION_ROADMAP.md`
 - `docs/Programmers_Manual.md`

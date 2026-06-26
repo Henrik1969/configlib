@@ -192,12 +192,14 @@ The generated docs are a baseline. You are expected to style and polish manuals 
 
 ## 7. Install locally
 
-If install targets are available in your checked-out version, use:
+Use a local staging prefix first:
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX="$PWD/install"
 cmake --build build -j$(nproc)
-sudo cmake --install build
+cmake --install build
 ```
 
 For a user-local install:
@@ -211,21 +213,42 @@ cmake --build build -j$(nproc)
 cmake --install build
 ```
 
-Then make sure your compiler and loader can find the installed files. For example:
+The install tree contains headers, the enabled library targets, CMake package files, and `pkg-config` metadata. See [`PACKAGING.md`](PACKAGING.md).
+
+For a `$HOME/.local` shared-library install, make sure your runtime loader can find the library if your platform does not already search that prefix:
 
 ```sh
-export CPLUS_INCLUDE_PATH="$HOME/.local/include:$CPLUS_INCLUDE_PATH"
-export LIBRARY_PATH="$HOME/.local/lib:$LIBRARY_PATH"
 export LD_LIBRARY_PATH="$HOME/.local/lib:$LD_LIBRARY_PATH"
 ```
-
-If your current version does not yet provide polished install/export targets, vendor the source or add it as a CMake subdirectory for now. Full install/package hardening belongs to the stabilization track.
 
 ---
 
 ## 8. Use from a CMake C++ project
 
-### Option A: vendored subdirectory
+### Option A: installed package
+
+After installing `configlib`, point CMake at the install prefix:
+
+```sh
+cmake -S myapp -B myapp-build \
+  -DCMAKE_PREFIX_PATH=/path/to/configlib/install
+```
+
+Consumer `CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(myapp LANGUAGES CXX)
+
+find_package(configlib CONFIG REQUIRED)
+
+add_executable(myapp src/main.cpp)
+target_link_libraries(myapp PRIVATE configlib::configlib)
+```
+
+The installed package also exposes `configlib::shared` and `configlib::static` when those library forms were installed.
+
+### Option B: vendored subdirectory
 
 Project layout:
 
@@ -250,7 +273,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(external/configlib)
 
 add_executable(myapp src/main.cpp)
-target_link_libraries(myapp PRIVATE configlib)
+target_link_libraries(myapp PRIVATE configlib::static)
 ```
 
 Include it:
@@ -259,17 +282,6 @@ Include it:
 #include <configlib/configlib.hpp>
 ```
 
-### Option B: installed library
-
-Once install/package targets are stable, the intended shape is:
-
-```cmake
-find_package(configlib REQUIRED)
-
-target_link_libraries(myapp PRIVATE configlib::configlib)
-```
-
-Until then, vendoring is the safest route.
 
 ---
 
@@ -347,18 +359,22 @@ Basic shape:
 
 int main(void)
 {
-    printf("configlib version: %s\n", configlib_version_string());
+    printf("configlib version: %d.%d.%d\n",
+           configlib_version_major(),
+           configlib_version_minor(),
+           configlib_version_patch());
     return 0;
 }
 ```
 
-Compile shape, adjusted for your install path:
+Compile through `pkg-config` after installation:
 
 ```sh
-cc main.c -I/path/to/configlib/include -L/path/to/configlib/build -lconfiglib -o myapp
+export PKG_CONFIG_PATH=/path/to/configlib/install/lib/pkgconfig:$PKG_CONFIG_PATH
+c++ main.c $(pkg-config --cflags --libs configlib) -o myapp
 ```
 
-The C ABI currently trails the full C++ feature set. Full parity for the non-template core is planned for the v0.9 line.
+The C ABI is the intended binding surface for non-C++ languages. It covers the non-template core; C++ template helpers such as `StructBinding<T>` remain C++-only.
 
 ---
 
@@ -413,29 +429,34 @@ no C++ exceptions may cross the C ABI
 
 ```python
 import ctypes
-from ctypes import c_char_p
 
 lib = ctypes.CDLL("./build/libconfiglib.so")
-lib.configlib_version_string.restype = c_char_p
 
-print(lib.configlib_version_string().decode("utf-8"))
+print(
+    lib.configlib_version_major(),
+    lib.configlib_version_minor(),
+    lib.configlib_version_patch(),
+    sep=".",
+)
 ```
 
 ### Rust sketch
 
 ```rust
-use std::ffi::CStr;
-use std::os::raw::c_char;
-
 extern "C" {
-    fn configlib_version_string() -> *const c_char;
+    fn configlib_version_major() -> i32;
+    fn configlib_version_minor() -> i32;
+    fn configlib_version_patch() -> i32;
 }
 
 fn main() {
     unsafe {
-        let ptr = configlib_version_string();
-        let version = CStr::from_ptr(ptr).to_string_lossy();
-        println!("configlib version: {}", version);
+        println!(
+            "configlib version: {}.{}.{}",
+            configlib_version_major(),
+            configlib_version_minor(),
+            configlib_version_patch()
+        );
     }
 }
 ```
@@ -449,8 +470,10 @@ const c = @cImport({
 });
 
 pub fn main() void {
-    const version = std.mem.span(c.configlib_version_string());
-    std.debug.print("configlib version: {s}\n", .{version});
+    std.debug.print(
+        "configlib version: {d}.{d}.{d}\n",
+        .{ c.configlib_version_major(), c.configlib_version_minor(), c.configlib_version_patch() },
+    );
 }
 ```
 
@@ -611,15 +634,18 @@ What did it override?
 
 ## 15. Stability expectations
 
-`configlib` is still pre-1.0. The v0.8 line is the API cleanup and documentation preparation line.
+`configlib` is still pre-1.0. The current focus is hardening the dependency-consumption surface and preparing for API freeze.
 
 The intended stabilization path is:
 
 ```text
-v0.8.x  API cleanup and documentation
-v0.9.x  C ABI parity and binding surface stabilization
-v0.10.x install/package/CI/hardening
-v1.0.0  first stable dependency release
+v0.8.x   API cleanup and documentation
+v0.9.x   C ABI parity and binding surface stabilization
+v0.10.x  install/package/build hardening
+v0.11.x  API freeze candidate
+v0.12.x  release-candidate cleanup if needed
+v0.13.x  trial by fire: hostile tests, sanitizer/fuzzing/stress checks
+v1.0.0   first stable dependency release
 ```
 
 If you are integrating before v1.0, prefer vendoring or pinning a tag.
@@ -634,6 +660,7 @@ Start here:
 docs/EXPLAINED_SIMPLY.md
 docs/TERMINOLOGY.md
 docs/Programmers_Manual.md
+docs/PACKAGING.md
 docs/PUBLIC_API_MAP.md
 ```
 
