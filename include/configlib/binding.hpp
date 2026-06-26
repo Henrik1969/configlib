@@ -16,6 +16,7 @@
 
 namespace configlib {
 
+/// Result of projecting a scoped view into a typed application struct.
 template <typename T>
 class BindingResult {
 public:
@@ -32,6 +33,10 @@ private:
     DiagnosticLog diagnostics_{};
 };
 
+/// Explicit typed projection from `ConfigView` into an application struct.
+///
+/// Bindings are convenience snapshots. They are not the source of governed
+/// truth; the `ConfigStore` remains authoritative.
 template <typename T>
 class StructBinding {
 public:

@@ -10,6 +10,12 @@
 
 namespace configlib {
 
+/// Runtime type tag for a scalar configuration value.
+///
+/// `configlib` v0.8 models values as scalar values only: null, boolean,
+/// integer, floating point, and string. Object/array formats may be provided
+/// later by loaders or plugins, but the core resolved value model remains
+/// deliberately small.
 enum class ValueType {
     Null,
     Bool,
@@ -18,6 +24,10 @@ enum class ValueType {
     String
 };
 
+/// Scalar configuration value used by facts, resolved configs, stores, views, and schemas.
+///
+/// Conversion functions named `as_*()` never silently fallback; they return
+/// `std::optional`. Explicit fallback is only available through `as_*_or()`.
 class Value {
 public:
     using Storage = std::variant<std::monostate, bool, std::int64_t, double, std::string>;
@@ -54,6 +64,7 @@ private:
     Storage value_;
 };
 
+/// Returns a stable human-readable name for a `ValueType`.
 [[nodiscard]] const char* value_type_name(ValueType type);
 
 } // namespace configlib

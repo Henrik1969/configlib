@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(configlib
-    VERSION 0.8.0
+    VERSION 0.9.1
     DESCRIPTION "Policy and fact driven configuration resolution library"
     LANGUAGES C CXX
 )
@@ -12,6 +12,7 @@ option(CONFIGLIB_BUILD_SHARED "Build shared library" ON)
 option(CONFIGLIB_BUILD_STATIC "Build static library" ON)
 option(CONFIGLIB_BUILD_EXAMPLES "Build examples" ON)
 option(CONFIGLIB_BUILD_TESTS "Build tests" ON)
+option(CONFIGLIB_BUILD_DOCS "Add a Doxygen documentation target when Doxygen is available" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -80,6 +81,20 @@ if(CONFIGLIB_BUILD_STATIC)
     set(CONFIGLIB_LINK_TARGET configlib_static)
 elseif(CONFIGLIB_BUILD_SHARED)
     set(CONFIGLIB_LINK_TARGET configlib_shared)
+endif()
+
+if(CONFIGLIB_BUILD_DOCS)
+    find_package(Doxygen QUIET)
+    if(DOXYGEN_FOUND)
+        add_custom_target(configlib_docs
+            COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            COMMENT "Generating configlib API documentation with Doxygen"
+            VERBATIM
+        )
+    else()
+        message(WARNING "CONFIGLIB_BUILD_DOCS is ON, but Doxygen was not found")
+    endif()
 endif()
 
 if(CONFIGLIB_BUILD_EXAMPLES)

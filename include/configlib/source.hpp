@@ -6,6 +6,7 @@
 
 namespace configlib {
 
+/// Origin category for a configuration fact or resolved value.
 enum class SourceKind {
     InternalDefault,
     File,
@@ -15,6 +16,10 @@ enum class SourceKind {
     Unknown
 };
 
+/// Provenance information for a configuration fact or chosen value.
+///
+/// A source records both a broad kind and a human-readable name, such as
+/// `file:~/.config/app.conf`, `env:APP_LOG_LEVEL`, or `cli:--log-level`.
 class Source {
 public:
     Source();
@@ -35,6 +40,7 @@ private:
     std::string name_;
 };
 
+/// Returns a stable human-readable name for a `SourceKind`.
 [[nodiscard]] const char* source_kind_name(SourceKind kind);
 
 } // namespace configlib

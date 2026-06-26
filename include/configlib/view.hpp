@@ -13,6 +13,10 @@
 
 namespace configlib {
 
+/// Read-only scoped non-owning view into a `ConfigStore` subtree.
+///
+/// A view borrows store state and must not outlive the store. It is created by
+/// `ConfigStore::view()` or explicitly from an existing store and prefix.
 class ConfigView {
 public:
     ConfigView() = delete;

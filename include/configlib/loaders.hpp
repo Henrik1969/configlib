@@ -15,17 +15,20 @@
 
 namespace configlib {
 
+/// Behavior when a loader sees input that policy did not map.
 enum class UnknownInputPolicy {
     Ignore,
     Warn,
     Error
 };
 
+/// Environment variable mapping strategy.
 enum class EnvMappingStyle {
     ExplicitOnly,
     PrefixToDottedLowercase
 };
 
+/// Behavior when configured file discovery finds no usable config files.
 enum class AbsenceAction {
     Ignore,
     Warn,
@@ -33,16 +36,19 @@ enum class AbsenceAction {
     UseInternalDefaults
 };
 
+/// File format understood by the built-in config-file loader.
 enum class ConfigFileFormat {
     KeyValue
 };
 
+/// Explicit environment variable to configuration key mapping.
 struct EnvVarRule {
     std::string variable;
     KeyPath key;
     std::optional<ValueType> type;
 };
 
+/// Policy for turning environment variables into facts.
 class EnvironmentLoaderPolicy {
 public:
     EnvironmentLoaderPolicy& enabled(bool value = true);
@@ -65,6 +71,7 @@ private:
     std::vector<EnvVarRule> explicit_rules_;
 };
 
+/// CLI option to configuration key mapping.
 struct CliOptionRule {
     std::string option;
     KeyPath key;
@@ -72,6 +79,10 @@ struct CliOptionRule {
     bool takes_value{true};
 };
 
+/// Policy for turning raw argv tokens into facts.
+///
+/// The built-in CLI loader does not delegate semantics to `getopt`; argv is raw
+/// input and mapping behavior is explicit policy.
 class CliLoaderPolicy {
 public:
     CliLoaderPolicy& enabled(bool value = true);
@@ -89,6 +100,7 @@ private:
     std::vector<CliOptionRule> rules_;
 };
 
+/// Provider for authoritative internal default facts.
 class InternalDefaultsProvider {
 public:
     InternalDefaultsProvider& set(KeyPath key, Value value);
@@ -103,11 +115,13 @@ private:
     std::map<std::string, Value> defaults_;
 };
 
+/// One candidate path searched by file discovery.
 struct FileSearchRule {
     std::string path;
     bool required{false};
 };
 
+/// Policy for discovering and loading configuration files.
 class FileDiscoveryPolicy {
 public:
     FileDiscoveryPolicy& enabled(bool value = true);
@@ -131,11 +145,13 @@ private:
     InternalDefaultsProvider internal_defaults_;
 };
 
+/// A config file discovered by `discover_config_files()`.
 struct DiscoveredConfigFile {
     std::string path;
     ConfigFileFormat format{ConfigFileFormat::KeyValue};
 };
 
+/// Facts and diagnostics produced by a loader.
 struct LoadReport {
     FactSet facts;
     DiagnosticLog diagnostics;
@@ -143,6 +159,7 @@ struct LoadReport {
     [[nodiscard]] bool ok() const;
 };
 
+/// File discovery summary plus any load report.
 struct DiscoveryReport {
     std::vector<DiscoveredConfigFile> files;
     LoadReport load;

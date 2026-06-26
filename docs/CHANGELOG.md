@@ -1,5 +1,149 @@
 # Changelog
 
+## v0.9.1
+
+Fire-testing roadmap release on top of v0.9.0.
+
+Added:
+
+- `docs/FIRE_TESTING.md`, a pre-v1 hardening roadmap for the v0.13.x trial-by-fire phase.
+- Explicit acceptance rule: every rejection must have a reason.
+- Test categories for conflict resolution, false claims, schema rejection, store/view isolation, transactions, export/redaction, C ABI abuse, malformed loader input, stress cases, and security boundaries.
+- Sanitizer, fuzzing, and regression-test guidance.
+- v1 gate question: whether configlib can be trusted when users are wrong, files are broken, bindings are clumsy, and attackers are annoying.
+
+Changed:
+
+- Bumped project version to `0.9.1`.
+- README, roadmap, terminology, and public API map now link the fire-testing track.
+
+Design note: v0.9.1 changes no library behavior. It records the hostile-testing and failure-semantics track that must be completed before v1.0.
+
+## v0.9.0
+
+C ABI parity and binding-surface release on top of v0.8.5.
+
+Added/expanded:
+
+- `docs/C_ABI.md`, documenting opaque C handles, ownership, borrowed strings, and binding-language rules.
+- C ABI version/status/name helpers.
+- C ABI double facts/defaults/getters.
+- C ABI policy helpers for allowed strings and integer ranges.
+- C ABI file loading helper for simple key=value config files.
+- C ABI schema handle with required/optional rules, allowed strings, numeric ranges, documented defaults, descriptions, and validation results.
+- C ABI access policy handle for runtime mutability, exportability, secret/redaction, and reset behavior.
+- C ABI store handle created from a resolve result plus context policies and optional access policy.
+- C ABI store getters, explain, diagnostics, export, runtime-change checks, scoped view creation, and transaction creation.
+- C ABI transaction handle for staged set/erase/reset/validate/commit/rollback operations.
+- C ABI view handle for scoped read-only getters, explain, full export, and local export.
+- Broader C ABI smoke test covering schema, store, access policy, transactions, redaction, and scoped views.
+
+Changed:
+
+- Bumped project version to `0.9.0`.
+- `configlib.h` C ABI version is now `0.9.0`.
+- README and public API map now describe v0.9 as the binding-surface stabilization island.
+
+C++ behavior is unchanged. C++ template projections such as `StructBinding<T>` remain outside the C ABI by design.
+
+
+## v0.8.5
+
+Roadmap/documentation release on top of v0.8.4.
+
+Added:
+
+- `docs/MACHINE_CONFIGURATION_ROADMAP.md`, a long-term roadmap for post-v1 configuration tooling and machine configuration governance.
+- Configuration-law package concept for describing native configuration surfaces in machine-readable form.
+- Post-v1 tool direction for `configlint`, `configforge`, `configdoctor`, `configapply`, `configctl`, and related tools.
+- Whole-machine lifecycle scope from bootloader through kernel command line, initramfs, init/service layer, user session, shutdown, rollback, and recovery.
+- Explicit boundary that this is not a v1 core requirement; it is a railroad marker for work that can grow around a stable `configlib` v1.
+
+Updated:
+
+- README documentation index and release description.
+- Roadmap with the machine-configuration direction and v0.9 C ABI focus.
+- Public API map with the long-term tooling/law-package roadmap link.
+- Terminology guide with configuration law and configuration swamp definitions.
+- Project version metadata to `0.8.5`.
+
+Design note: v0.8.5 changes no library behavior. It records the long rail beyond v1 so v0.9 can focus on C ABI parity and binding-surface stabilization.
+
+## v0.8.4
+
+HOWTO/documentation release on top of v0.8.3.
+
+Added:
+
+- `docs/HOWTO.md`, a practical guide for third-party developers discovering configlib.
+- Build, test, documentation-generation, local install, vendoring, and CMake integration instructions.
+- C++, C ABI, Python ctypes, Rust FFI, and Zig `@cImport` starting points.
+- Recommended application integration pattern and common mistakes section.
+
+Updated:
+
+- README documentation index.
+- Public API map cross-links.
+- Project version metadata to `0.8.4`.
+
+Design note: v0.8.4 changes no library behavior. It improves onboarding for outside developers before the stable-release track.
+
+## v0.8.3
+
+Plain-language documentation release on top of v0.8.2.
+
+Added:
+
+- `docs/EXPLAINED_SIMPLY.md`, a newcomer-friendly explanation of configlib.
+- A courtroom metaphor mapping facts, policy, schema, resolver, resolved config, diagnostics, store, view, and bindings to ordinary language.
+- A commented C++ example that uses the metaphor directly inside code comments.
+
+Updated:
+
+- README documentation index.
+- Public API map cross-links.
+- Terminology guide cross-links.
+- Project version metadata to `0.8.3`.
+
+Design note: v0.8.3 changes no library behavior. It improves approachability before the stable-release track.
+
+## v0.8.2
+
+Terminology/documentation clarity release on top of v0.8.1.
+
+Added:
+
+- `docs/TERMINOLOGY.md`, a plain-language glossary for third-party readers.
+- Definitions for governance, fact, source, provenance, policy, schema, store, view, binding, diagnostics, runtime mutation, redaction, and related terms.
+
+Changed:
+
+- README now points readers to the terminology guide.
+- Project version metadata to `0.8.2`.
+
+Design note: v0.8.2 does not change library behavior. It clarifies the vocabulary needed before a stable public release.
+
+## v0.8.1
+
+Documentation and generated-code-documentation preparation release on top of v0.8.0.
+
+Added:
+
+- Doxygen-compatible public API comments in public headers.
+- Root `Doxyfile` for generated documentation.
+- HTML and LaTeX documentation output configuration.
+- Optional `CONFIGLIB_BUILD_DOCS` CMake target when Doxygen is available.
+- `docs/PUBLIC_API_MAP.md`.
+- `docs/DOCUMENTATION_GENERATION.md`.
+
+Changed:
+
+- README now documents how to generate API documentation.
+- `docs/CODE_DOCUMENTATION.md` now describes the active documentation policy instead of a future placeholder.
+- Project version metadata to `0.8.1`.
+
+Design note: LaTeX output is enabled intentionally as a foundation for later polished PDF manuals.
+
 ## v0.8.0
 
 API cleanup and stabilization-preparation release on top of v0.7.0.

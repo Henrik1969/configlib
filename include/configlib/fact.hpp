@@ -11,12 +11,17 @@
 
 namespace configlib {
 
+/// Role of a fact in the configuration pipeline.
 enum class FactRole {
     Application,
     MetaConfig,
     Policy
 };
 
+/// One raw configuration claim before resolution.
+///
+/// A fact is a key/value claim with source provenance, precedence, role, and
+/// insertion order. Resolution policies decide which fact wins for a key.
 struct Fact {
     KeyPath key;
     Value value;
@@ -26,6 +31,10 @@ struct Fact {
     std::size_t insertion_order{0};
 };
 
+/// Ordered collection of raw configuration facts.
+///
+/// Loaders and providers produce facts. The resolver consumes facts together
+/// with policy to create a `ResolvedConfig`.
 class FactSet {
 public:
     Fact& add(KeyPath key, Value value, Source source, int precedence, FactRole role = FactRole::Application);
@@ -44,6 +53,7 @@ private:
     std::vector<Fact> facts_;
 };
 
+/// Returns a stable human-readable name for a `FactRole`.
 [[nodiscard]] const char* fact_role_name(FactRole role);
 
 } // namespace configlib

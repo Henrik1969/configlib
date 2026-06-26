@@ -17,11 +17,17 @@
 
 namespace configlib {
 
+/// Whether a schema key is optional or required.
 enum class SchemaPresence {
     Optional,
     Required
 };
 
+/// Shape rule for one configuration key.
+///
+/// Schema rules validate presence, type, allowed strings, numeric bounds, and
+/// documentation metadata. Runtime mutability, exportability, and secrecy are
+/// deliberately not schema concerns; those belong to `AccessPolicy`.
 struct SchemaRule {
     KeyPath key;
     std::optional<ValueType> expected_type;
@@ -35,6 +41,10 @@ struct SchemaRule {
     std::string description;
 };
 
+/// Fluent builder for a `SchemaRule`.
+///
+/// `documented_default()` records default metadata for documentation. It does
+/// not inject facts. Authoritative defaults are facts from providers/loaders.
 class SchemaPathBuilder {
 public:
     explicit SchemaPathBuilder(SchemaRule& rule);
@@ -62,6 +72,7 @@ private:
     SchemaRule* rule_{nullptr};
 };
 
+/// Result of validating a config or view against a `ConfigSchema`.
 class SchemaValidationResult {
 public:
     explicit SchemaValidationResult(DiagnosticLog diagnostics);
@@ -73,6 +84,10 @@ private:
     DiagnosticLog diagnostics_;
 };
 
+/// In-code contract describing valid configuration shape.
+///
+/// A schema validates resolved configuration or scoped views. It does not
+/// perform discovery, precedence resolution, runtime mutation, or export policy.
 class ConfigSchema {
 public:
     SchemaPathBuilder path(KeyPath key);
@@ -87,6 +102,7 @@ private:
     std::map<std::string, SchemaRule> rules_;
 };
 
+/// Returns a stable human-readable name for `SchemaPresence`.
 [[nodiscard]] const char* schema_presence_name(SchemaPresence presence);
 
 } // namespace configlib

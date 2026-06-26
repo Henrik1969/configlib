@@ -14,6 +14,7 @@
 
 namespace configlib {
 
+/// Resolved value for one key plus provenance and candidate facts.
 struct ResolvedEntry {
     KeyPath key;
     Value value;
@@ -21,6 +22,10 @@ struct ResolvedEntry {
     std::vector<Fact> candidates;
 };
 
+/// Immutable resolved configuration view produced by `resolve()`.
+///
+/// Getters named `get_*()` return `std::optional` and never supply implicit
+/// fallback. Getters named `get_*_or()` use an explicit caller fallback.
 class ResolvedConfig {
 public:
     void set(ResolvedEntry entry);
@@ -50,6 +55,10 @@ private:
     std::map<std::string, ResolvedEntry> entries_;
 };
 
+/// Result of resolving a `FactSet` using a `PolicySet`.
+///
+/// A result carries both the primary value (`ResolvedConfig`) and diagnostics.
+/// `ok()` is false if diagnostics contain errors.
 class ResolveResult {
 public:
     ResolveResult(ResolvedConfig config, DiagnosticLog diagnostics);
@@ -63,6 +72,7 @@ private:
     DiagnosticLog diagnostics_;
 };
 
+/// Resolves raw facts into a `ResolvedConfig` using the supplied policy set.
 ResolveResult resolve(const FactSet& facts, const PolicySet& policies);
 
 } // namespace configlib

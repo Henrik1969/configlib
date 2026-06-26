@@ -1,4 +1,4 @@
-# configlib v0.8.0
+# configlib v0.9.1
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,7 +6,7 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.8.0 is an API cleanup and stabilization-preparation release. It sharpens naming, fallback behavior, schema/policy boundaries, view/transaction validity, export-mode names, and documentation before wider dependency use.
+v0.9.1 is a roadmap/documentation release on top of v0.9.0. It adds the fire-testing plan for the pre-v1 hardening track: hostile inputs, conflict edge cases, C ABI abuse tests, sanitizer runs, export/redaction safety, and failure semantics.
 
 Important current capabilities include:
 
@@ -31,6 +31,22 @@ cmake --build build -j20
 ctest --test-dir build --output-on-failure
 ```
 
+
+## Generate documentation
+
+The project ships a Doxygen configuration with HTML and LaTeX output enabled:
+
+```sh
+doxygen Doxyfile
+```
+
+Generated docs are written below `build/docs/`. LaTeX generation is enabled deliberately so later releases can produce polished PDF manuals. A CMake helper target is also available when Doxygen is installed:
+
+```sh
+cmake -S . -B build -G Ninja -DCONFIGLIB_BUILD_DOCS=ON
+cmake --build build --target configlib_docs
+```
+
 ## Run examples
 
 ```sh
@@ -48,7 +64,7 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 
 - C++20 library
 - Static and shared build targets
-- Opaque C ABI
+- Expanded opaque C ABI for binding languages
 - Scalar value model: null, bool, int64, double, string
 - Dotted key paths
 - Facts with source/provenance and precedence
@@ -100,10 +116,18 @@ SPDX-License-Identifier: MIT
 
 See `docs/`. Start with:
 
+- `docs/HOWTO.md`
+- `docs/FIRE_TESTING.md`
+- `docs/MACHINE_CONFIGURATION_ROADMAP.md`
 - `docs/Programmers_Manual.md`
+- `docs/C_ABI.md`
+- `docs/TERMINOLOGY.md`
+- `docs/EXPLAINED_SIMPLY.md`
 
 - `docs/ARCHITECTURE.md`
 - `docs/API.md`
+- `docs/PUBLIC_API_MAP.md`
+- `docs/DOCUMENTATION_GENERATION.md`
 - `docs/LOADERS.md`
 - `docs/FILE_DISCOVERY.md`
 - `docs/STORE.md`

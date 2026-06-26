@@ -10,12 +10,17 @@
 
 namespace configlib {
 
+/// Severity of a diagnostic event.
 enum class Severity {
     Info,
     Warning,
     Error
 };
 
+/// One diagnostic event emitted by loaders, resolver, schema, store, or bindings.
+///
+/// Diagnostic codes are intended to be stable enough for tooling. Human-readable
+/// messages are convenience text and may later be localized by applications.
 struct Diagnostic {
     Severity severity{Severity::Info};
     std::string code;
@@ -24,6 +29,10 @@ struct Diagnostic {
     Source source;
 };
 
+/// Ordered collection of diagnostics.
+///
+/// Diagnostics are first-class output from operations. Configuration errors are
+/// reported through diagnostics rather than hidden fallback behavior.
 class DiagnosticLog {
 public:
     void add(Diagnostic diagnostic);

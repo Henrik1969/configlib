@@ -2,6 +2,9 @@
 
 #pragma once
 
+/// @file configlib.hpp
+/// One-stop C++ include for the public configlib API.
+
 #include <configlib/diagnostic.hpp>
 #include <configlib/fact.hpp>
 #include <configlib/key.hpp>

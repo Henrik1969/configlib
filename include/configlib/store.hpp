@@ -18,6 +18,9 @@
 
 namespace configlib {
 
+/// Export mode for serializing configuration from stores or views.
+///
+/// Redacted variants hide values marked secret by `AccessPolicy`.
 enum class ExportMode {
     Effective,
     EffectiveRedacted,
@@ -29,6 +32,7 @@ enum class ExportMode {
     Redacted = EffectiveRedacted
 };
 
+/// Runtime access/export rule for one key.
 struct AccessRule {
     KeyPath key;
     bool runtime_mutable{true};
@@ -37,6 +41,9 @@ struct AccessRule {
     bool resettable{true};
 };
 
+/// Runtime behavior policy for mutation, export, secrecy, and reset.
+///
+/// `AccessPolicy` owns runtime/export behavior. Schema owns shape validation.
 class AccessPolicy {
 public:
     AccessRule& path(KeyPath key);
@@ -59,6 +66,10 @@ private:
 class ConfigStore;
 class ConfigView;
 
+/// Staged runtime mutation against a `ConfigStore`.
+///
+/// Transactions borrow store state and must not outlive the store. Changes are
+/// validated against access policy before commit.
 class ConfigTransaction {
 public:
     ConfigTransaction() = delete;
@@ -92,6 +103,10 @@ private:
     friend class ConfigStore;
 };
 
+/// Governed runtime configuration owner.
+///
+/// `ConfigStore` owns defaults, resolved base values, runtime overrides, access
+/// policy, and diagnostics. It is the source of governed runtime truth.
 class ConfigStore {
 public:
     ConfigStore() = default;
@@ -146,6 +161,7 @@ private:
     friend class ConfigView;
 };
 
+/// Returns a stable human-readable name for an `ExportMode`.
 [[nodiscard]] const char* export_mode_name(ExportMode mode);
 
 } // namespace configlib

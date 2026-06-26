@@ -7,6 +7,10 @@
 
 namespace configlib {
 
+/// Dotted semantic configuration key path such as `logging.level`.
+///
+/// `KeyPath` is not a filesystem path. It is the common key representation
+/// used by facts, policies, schemas, stores, views, and bindings.
 class KeyPath {
 public:
     KeyPath() = default;

@@ -14,12 +14,14 @@
 
 namespace configlib {
 
+/// Legacy/simple policy for missing keys during resolution.
 enum class MissingPolicy {
     Optional,
     Required,
     UseDefault
 };
 
+/// Policy for resolving multiple candidate facts for one key.
 enum class ConflictPolicy {
     HighestPrecedenceWins,
     RejectConflict,
@@ -27,6 +29,10 @@ enum class ConflictPolicy {
     LastWins
 };
 
+/// Per-key resolution policy.
+///
+/// `PolicySet` governs resolution behavior. Broader structural validation
+/// belongs to `ConfigSchema`; runtime/export behavior belongs to `AccessPolicy`.
 struct KeyPolicy {
     KeyPath key;
     std::optional<ValueType> expected_type;
@@ -38,6 +44,10 @@ struct KeyPolicy {
     std::optional<std::int64_t> max_int;
 };
 
+/// Resolution policy set: source precedence, missing behavior, and conflicts.
+///
+/// Policy governs how facts are resolved. It is not the schema and not the
+/// runtime access/export policy.
 class PolicySet {
 public:
     PolicySet();
@@ -64,7 +74,9 @@ private:
     std::map<std::string, KeyPolicy> key_policies_;
 };
 
+/// Returns a stable human-readable name for a `MissingPolicy`.
 [[nodiscard]] const char* missing_policy_name(MissingPolicy policy);
+/// Returns a stable human-readable name for a `ConflictPolicy`.
 [[nodiscard]] const char* conflict_policy_name(ConflictPolicy policy);
 
 } // namespace configlib

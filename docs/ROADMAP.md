@@ -1,5 +1,74 @@
 # Roadmap
 
+## v0.8.5 completed
+
+- Added `docs/MACHINE_CONFIGURATION_ROADMAP.md`.
+- Recorded the long-term railroad beyond v1: configuration-law packages, post-v1 tools, and governed local-machine configuration.
+- Explicitly kept this outside the v1 core feature set.
+- Marked v0.9 as the next practical engineering phase: C ABI parity and binding-surface stabilization.
+
+## v0.9.0 completed
+
+- Expanded the opaque C ABI across the non-template core.
+- Added schema/access-policy/store/transaction/view/export coverage for binding languages.
+- Added `docs/C_ABI.md`.
+- Kept C++ behavior unchanged.
+
+## v0.9.1 completed
+
+- Added `docs/FIRE_TESTING.md`.
+- Recorded the v0.13.x trial-by-fire phase before v1.0.
+- Defined the core hardening rule: every rejection must have a reason.
+- Captured hostile-input, C ABI abuse, conflict, redaction, transaction, stress, sanitizer, and fuzzing test directions.
+- Kept v0.9.1 documentation-only so v0.10 can focus on packaging/install hardening.
+
+## Road to v1.0
+
+Recommended stabilization track:
+
+- `v0.10.x` — packaging, install rules, CMake package export, pkg-config if useful, warning cleanup, sanitizer documentation, fresh-tarball validation, and CI template.
+- `v0.11.x` — API freeze candidate and final public-header/C ABI review.
+- `v0.12.x` — release-candidate cleanup if needed.
+- `v0.13.x` — fire testing: edge cases, hostile inputs, failure semantics, sanitizer/fuzzing/stress tests, and security-boundary review.
+- `v1.0.0` — first stable release.
+
+See `FIRE_TESTING.md` for the v0.13 trial-by-fire checklist.
+
+## Next: v0.10 packaging, install, and hardening
+
+The next recommended phase is to make the library easier and safer to consume as a dependency.
+
+Focus areas:
+
+- facts and fact sets
+- policy construction
+- resolver access
+- diagnostics
+- resolved-config getters
+- schema construction and validation
+- store creation and access
+- transactions
+- scoped views
+- export functions
+- explicit ownership/lifetime rules for all C handles and returned strings
+
+Do not start plugin ABI, live reload, watcher integration, config-law packages, or machine-management tools until the C ABI stability island exists.
+
+## Post-v1 railroad: configuration tools and machine governance
+
+After v1, `configlib` can become the stable core under a tooling ecosystem:
+
+- `configlint` for mocking, resolving, validating, inspecting, and explaining configuration setups
+- `configforge` for generating candidate native configuration from intent plus installed law packages
+- `configdoctor` for diagnosing bad or suspicious configuration
+- `configapply` for dry-run, backup, apply, verify, and rollback
+- `configctl` as a possible operator-facing frontend
+
+The longer rail is not one universal configuration format. It is one governed way to reason about many native configuration systems.
+
+See `MACHINE_CONFIGURATION_ROADMAP.md`.
+
+
 ## v0.8.0 completed
 
 - API cleanup and stabilization-preparation pass.
