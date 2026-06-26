@@ -1,5 +1,33 @@
 # Changelog
 
+## v1.0.0
+
+First stable release of configlib.
+
+This release promotes the governed configuration core to v1.0.0 after fire testing and external-consumer validation.
+
+Validated areas include:
+
+- C++ API version helpers.
+- C ABI version helpers.
+- External CMake C++ consumer.
+- pkg-config C consumer.
+- Python ctypes smoke test.
+- LuaJIT FFI smoke test.
+- Rust FFI smoke test.
+- Baseline build/test.
+- ASAN/UBSAN.
+- Valgrind.
+- ABI dump / abidw.
+- Coverage generation.
+- Install tree validation.
+
+Known non-blocking issues:
+
+- Local clang++ toolchain on the test host has a C++ standard-library setup issue.
+- Doxygen HTML output path is source-relative in the current docs setup.
+
+
 ## v0.13.1
 
 Fire-test follow-up release.

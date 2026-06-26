@@ -11,10 +11,10 @@
 #define REQUIRE_OK(expr) do { configlib_status st__ = (expr); if (st__ != CONFIGLIB_OK) { fprintf(stderr, "FAILED: %s returned %s at %s:%d\n", #expr, configlib_status_name(st__), __FILE__, __LINE__); return EXIT_FAILURE; } } while (0)
 
 int main(void) {
-    REQUIRE(configlib_version_major() == 0);
-    REQUIRE(configlib_version_minor() == 13);
-    REQUIRE(configlib_version_patch() == 1);
-    REQUIRE(strcmp(configlib_version_string(), "0.13.1") == 0);
+    REQUIRE(configlib_version_major() == 1);
+    REQUIRE(configlib_version_minor() == 0);
+    REQUIRE(configlib_version_patch() == 0);
+    REQUIRE(strcmp(configlib_version_string(), "1.0.0") == 0);
 
     configlib_ctx* ctx = configlib_create();
     REQUIRE(ctx != NULL);

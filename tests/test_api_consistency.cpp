@@ -12,11 +12,11 @@
 int main() {
     using namespace configlib;
 
-    static_assert(version_major() == 0);
-    static_assert(version_minor() == 13);
-    static_assert(version_patch() == 1);
-    static_assert(version_string()[0] == '0');
-    REQUIRE(std::string(version_string()) == "0.13.1");
+    static_assert(version_major() == 1);
+    static_assert(version_minor() == 0);
+    static_assert(version_patch() == 0);
+    static_assert(version_string()[0] == '1');
+    REQUIRE(std::string(version_string()) == "1.0.0");
 
     static_assert(!std::is_default_constructible_v<ConfigView>);
     static_assert(!std::is_default_constructible_v<ConfigTransaction>);

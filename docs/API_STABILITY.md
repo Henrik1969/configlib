@@ -2,7 +2,7 @@
 
 `configlib` is still pre-1.0.
 
-Version `0.13.1` is a fire-testing follow-up release after the release-candidate preparation point. The intended v1 public surface remains additive-only unless fire testing proves a correctness, safety, security, or serious usability defect that must be fixed before v1.0. v0.13.1 adds stable version-string helpers because external-consumer and binding smoke tests proved that this small ABI/API affordance should exist before v1.
+Version `1.0.0` is a fire-testing follow-up release after the release-candidate preparation point. The intended v1 public surface remains additive-only unless fire testing proves a correctness, safety, security, or serious usability defect that must be fixed before v1.0. v0.13.1 adds stable version-string helpers because external-consumer and binding smoke tests proved that this small ABI/API affordance should exist before v1.
 
 ## Current promise
 

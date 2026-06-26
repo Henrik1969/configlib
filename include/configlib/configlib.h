@@ -19,10 +19,10 @@
 extern "C" {
 #endif
 
-#define CONFIGLIB_C_VERSION_MAJOR 0
-#define CONFIGLIB_C_VERSION_MINOR 13
-#define CONFIGLIB_C_VERSION_PATCH 1
-#define CONFIGLIB_C_VERSION_STRING "0.13.1"
+#define CONFIGLIB_C_VERSION_MAJOR 1
+#define CONFIGLIB_C_VERSION_MINOR 0
+#define CONFIGLIB_C_VERSION_PATCH 0
+#define CONFIGLIB_C_VERSION_STRING "1.0.0"
 
 /** Opaque mutable context holding facts and policy before resolution. */
 typedef struct configlib_ctx configlib_ctx;

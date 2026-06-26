@@ -1,4 +1,4 @@
-# configlib v0.13.1
+# configlib v1.0.0
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,7 +6,7 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.13.1 is a focused fire-test follow-up release. It adds stable version-string helpers to the C++ API and C ABI after local gauntlet testing proved that binding and external-consumer smoke tests need a simple exported version string. v0.13.0 was the first trial-by-fire release. It adds hostile/edge-case testing, invalid-key rejection at the resolver and loader boundaries, and regression coverage for ambiguity, state preservation, redaction, scoped-view isolation, and stress behavior before v1.0.
+v1.0.0 is the first stable release. It adds stable version-string helpers to the C++ API and C ABI after local gauntlet testing proved that binding and external-consumer smoke tests need a simple exported version string. v0.13.0 was the first trial-by-fire release. It adds hostile/edge-case testing, invalid-key rejection at the resolver and loader boundaries, and regression coverage for ambiguity, state preservation, redaction, scoped-view isolation, and stress behavior before v1.0.
 
 Important current capabilities include:
 

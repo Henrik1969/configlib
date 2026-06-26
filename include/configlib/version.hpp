@@ -5,10 +5,10 @@
 /// @file version.hpp
 /// Compile-time version constants and helpers for configlib.
 
-#define CONFIGLIB_VERSION_MAJOR 0
-#define CONFIGLIB_VERSION_MINOR 13
-#define CONFIGLIB_VERSION_PATCH 1
-#define CONFIGLIB_VERSION_STRING "0.13.1"
+#define CONFIGLIB_VERSION_MAJOR 1
+#define CONFIGLIB_VERSION_MINOR 0
+#define CONFIGLIB_VERSION_PATCH 0
+#define CONFIGLIB_VERSION_STRING "1.0.0"
 
 namespace configlib {
 

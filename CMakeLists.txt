@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(configlib
-    VERSION 0.13.1
+    VERSION 1.0.0
     DESCRIPTION "Policy and fact driven configuration resolution library"
     LANGUAGES C CXX
 )

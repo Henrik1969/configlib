@@ -1,6 +1,6 @@
 # Roadmap
 
-## v0.13.1 completed
+## v1.0.0 completed
 
 - Added stable C++ and C ABI version-string helpers discovered as useful by local fire-test gauntlet exploration.
 - Kept the fire-test gauntlet itself external; it is future generalized tooling, not part of configlib proper.

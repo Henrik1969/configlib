@@ -1,6 +1,6 @@
 # Public API map
 
-This document gives a quick orientation map for the public `configlib` API as of `v0.13.1`.
+This document gives a quick orientation map for the public `configlib` API as of `v1.0.0`.
 
 ## Core data
 
