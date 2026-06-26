@@ -27,7 +27,7 @@ int main() {
     {
         FactSet facts;
         PolicySet policy;
-        policy.defaulted(KeyPath("server.host"), Value("127.0.0.1"));
+        facts.add_default(KeyPath("server.host"), Value("127.0.0.1"));
         auto result = resolve(facts, policy);
         REQUIRE(result.ok());
         REQUIRE(result.config().get_string(KeyPath("server.host")) == "127.0.0.1");

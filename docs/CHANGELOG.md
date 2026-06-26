@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.8.0
+
+API cleanup and stabilization-preparation release on top of v0.7.0.
+
+Changed:
+
+- Clarified schema/policy/access boundaries.
+- Removed runtime/export/secret metadata from schema rules; those belong to `AccessPolicy`.
+- Renamed schema default metadata to `documented_default()`. Schema documents defaults; it does not inject them.
+- Made `Value::as_string()`, `as_integer()`, `as_boolean()`, and `as_floating()` return `std::optional`.
+- Added explicit `Value::as_*_or()` fallback helpers.
+- Normalized getter semantics: `get_*()` may return optional values; `get_*_or()` uses explicit caller fallback.
+- Made `ConfigView` and `ConfigTransaction` non-default-constructible to avoid invalid handles.
+- Changed `ConfigStore::diagnostics()` to return a const reference.
+- Added explicit redacted export names such as `ExportMode::EffectiveRedacted`; `Redacted` remains as a compatibility alias.
+- Moved root `example.conf` to `examples/example.conf`.
+- Added API consistency tests.
+- Updated project version metadata to `0.8.0`.
+
+Added:
+
+- `docs/API_STABILITY.md`.
+- `docs/API_REVIEW.md`.
+- `docs/LIFETIMES.md`.
+- `docs/CODE_DOCUMENTATION.md`.
+- `tests/test_api_consistency.cpp`.
+
+Design rule: no silent fallback, no invalid handles, one source of truth for defaults, schema validates shape, policy governs behavior, bindings project into structs.
+
 ## v0.6.0
 
 Feature patch on top of v0.5.5.

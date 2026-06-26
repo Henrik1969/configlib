@@ -160,7 +160,7 @@ configlib_status configlib_result_get_int(const configlib_result* result, const 
     if (bad_result(result) || bad_str(key) || out_value == nullptr) return CONFIGLIB_INVALID_ARGUMENT;
     const auto value = result->result.config().get(configlib::KeyPath(key));
     if (!value || value->type() != configlib::ValueType::Int) return CONFIGLIB_NOT_FOUND;
-    *out_value = value->as_int();
+    *out_value = value->as_integer().value_or(0);
     return CONFIGLIB_OK;
 }
 
@@ -168,7 +168,7 @@ configlib_status configlib_result_get_bool(const configlib_result* result, const
     if (bad_result(result) || bad_str(key) || out_value == nullptr) return CONFIGLIB_INVALID_ARGUMENT;
     const auto value = result->result.config().get(configlib::KeyPath(key));
     if (!value || value->type() != configlib::ValueType::Bool) return CONFIGLIB_NOT_FOUND;
-    *out_value = value->as_bool() ? 1 : 0;
+    *out_value = value->as_boolean().value_or(false) ? 1 : 0;
     return CONFIGLIB_OK;
 }
 

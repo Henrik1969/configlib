@@ -140,7 +140,7 @@ private:
                     out.*member = fallback;
                     return;
                 }
-                out.*member = value->as_string();
+                out.*member = value->as_string().value_or(std::string{});
             }});
     }
 
@@ -159,7 +159,7 @@ private:
                     out.*member = fallback;
                     return;
                 }
-                out.*member = value->as_bool();
+                out.*member = value->as_boolean().value_or(false);
             }});
     }
 
@@ -178,7 +178,7 @@ private:
                     out.*member = fallback;
                     return;
                 }
-                out.*member = value->as_int();
+                out.*member = value->as_integer().value_or(0);
             }});
     }
 
@@ -197,7 +197,7 @@ private:
                     out.*member = fallback;
                     return;
                 }
-                out.*member = static_cast<int>(value->as_int());
+                out.*member = static_cast<int>(value->as_integer().value_or(0));
             }});
     }
 
@@ -212,11 +212,11 @@ private:
                     return;
                 }
                 if (value->type() == ValueType::Double) {
-                    out.*member = value->as_double();
+                    out.*member = value->as_floating().value_or(0.0);
                     return;
                 }
                 if (value->type() == ValueType::Int) {
-                    out.*member = static_cast<double>(value->as_int());
+                    out.*member = static_cast<double>(value->as_integer().value_or(0));
                     return;
                 }
                 report_type_mismatch(captured_key, "double", value->type(), diagnostics);

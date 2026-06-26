@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
     auto server = store.view(KeyPath("xyz.server"));
 
     std::cout << "log level = " << logging.get_string_or(KeyPath("level"), "info") << '\n';
-    std::cout << "port      = " << server.get_int_or(KeyPath("port"), 8080) << '\n';
+    std::cout << "port      = " << server.get_integer_or(KeyPath("port"), 8080) << '\n';
 
     std::cout << logging.explain(KeyPath("level"));
 }
@@ -596,7 +596,7 @@ Then redacted/export modes can protect them.
 
 ## Version note
 
-This manual describes `configlib` v0.6.0. The C ABI is intentionally narrower than the C++ API at this stage. Some language examples are binding sketches that show intended usage over the C ABI; they are not official packages yet.
+This manual describes `configlib` v0.8.0. The C ABI is intentionally narrower than the C++ API at this stage. Some language examples are binding sketches that show intended usage over the C ABI; they are not official packages yet.
 
 
 ## Typed struct bindings
@@ -618,3 +618,29 @@ auto cfg_result = binding.read(store.view(configlib::KeyPath("xyz.logging")));
 ```
 
 Bindings are snapshots. Runtime mutation still belongs to `ConfigStore` transactions.
+
+
+## Schema validation
+
+`ConfigSchema` is the v0.8 contract layer. It validates a resolved config or a scoped view.
+
+```cpp
+configlib::ConfigSchema schema;
+
+schema.path(configlib::KeyPath("xyz.logging.level"))
+    .string()
+    .required()
+    .allowed({"trace", "debug", "info", "warn", "error"});
+
+schema.path(configlib::KeyPath("xyz.server.port"))
+    .integer()
+    .required()
+    .range(static_cast<std::int64_t>(1), static_cast<std::int64_t>(65535));
+
+auto checked = schema.validate(result.config());
+if (!checked.ok()) {
+    std::cerr << checked.diagnostics().format();
+}
+```
+
+Schema is not a replacement for defaults or policy. Defaults are still facts. Policy still governs precedence, mutation, and export. Schema describes what the resolved configuration is expected to look like.

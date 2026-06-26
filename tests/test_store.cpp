@@ -18,7 +18,7 @@ int main() {
     facts.add_default(KeyPath("auth.token"), Value("secret-token"));
 
     PolicySet policies;
-    policies.defaulted(KeyPath("logging.level"), Value("info"));
+    facts.add_default(KeyPath("logging.level"), Value("info"));
     policies.allowed_strings(KeyPath("logging.level"), {"trace", "debug", "info", "warn", "error"});
     policies.require(KeyPath("server.port"), ValueType::Int);
     policies.int_range(KeyPath("server.port"), 1, 65535);

@@ -21,7 +21,7 @@ int main() {
     facts.add_cli(KeyPath("logging.level"), Value("debug"), "--log-level");
 
     PolicySet policies;
-    policies.defaulted(KeyPath("logging.level"), Value("info"));
+    facts.add_default(KeyPath("logging.level"), Value("info"));
     policies.optional(KeyPath("logging.color"), ValueType::Bool);
     policies.optional(KeyPath("logging.file"), ValueType::String);
     policies.optional(KeyPath("server.port"), ValueType::Int);

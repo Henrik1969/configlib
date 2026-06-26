@@ -3,7 +3,9 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
 #include <string>
+#include <string_view>
 #include <variant>
 
 namespace configlib {
@@ -32,12 +34,21 @@ public:
     [[nodiscard]] const Storage& storage() const;
     [[nodiscard]] std::string to_string() const;
 
-    [[nodiscard]] bool as_bool(bool fallback = false) const;
-    [[nodiscard]] std::int64_t as_int(std::int64_t fallback = 0) const;
-    [[nodiscard]] double as_double(double fallback = 0.0) const;
-    [[nodiscard]] std::string as_string(std::string fallback = {}) const;
+    [[nodiscard]] std::optional<bool> as_boolean() const;
+    [[nodiscard]] std::optional<std::int64_t> as_integer() const;
+    [[nodiscard]] std::optional<double> as_floating() const;
+    [[nodiscard]] std::optional<std::string> as_string() const;
+
+    [[nodiscard]] bool as_boolean_or(bool fallback) const;
+    [[nodiscard]] std::int64_t as_integer_or(std::int64_t fallback) const;
+    [[nodiscard]] double as_floating_or(double fallback) const;
+    [[nodiscard]] std::string as_string_or(std::string_view fallback) const;
 
     [[nodiscard]] bool is_null() const;
+    [[nodiscard]] bool is_boolean() const;
+    [[nodiscard]] bool is_integer() const;
+    [[nodiscard]] bool is_floating() const;
+    [[nodiscard]] bool is_string() const;
 
 private:
     Storage value_;

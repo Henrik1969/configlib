@@ -17,7 +17,7 @@ int main() {
     PolicySet policy;
     policy.require(KeyPath("logging.level"), ValueType::String);
     policy.allowed_strings(KeyPath("logging.level"), {"trace", "debug", "info", "warn", "error"});
-    policy.defaulted(KeyPath("server.host"), Value("127.0.0.1"));
+    facts.add_default(KeyPath("server.host"), Value("127.0.0.1"));
     policy.require(KeyPath("server.port"), ValueType::Int);
     policy.int_range(KeyPath("server.port"), 1, 65535);
 
@@ -28,8 +28,8 @@ int main() {
         return 1;
     }
 
-    std::cout << "logging.level = " << result.config().get_string(KeyPath("logging.level")) << '\n';
-    std::cout << "server.host = " << result.config().get_string(KeyPath("server.host")) << '\n';
-    std::cout << "server.port = " << result.config().get_int(KeyPath("server.port")) << '\n';
+    std::cout << "logging.level = " << result.config().get_string_or(KeyPath("logging.level"), "") << '\n';
+    std::cout << "server.host = " << result.config().get_string_or(KeyPath("server.host"), "") << '\n';
+    std::cout << "server.port = " << result.config().get_integer_or(KeyPath("server.port"), 0) << '\n';
     std::cout << "\nExplanation:\n" << result.config().format_explanation(KeyPath("logging.level"));
 }

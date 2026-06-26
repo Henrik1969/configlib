@@ -284,3 +284,21 @@ For the less formal project/release spirit and AI-assisted development acknowled
 ## Struct bindings
 
 Struct bindings project a scoped `ConfigView` into an ordinary C++ struct for subsystem convenience. They are snapshots, not the canonical store. Bindings are convenience projections; `ConfigStore` remains the source of governed truth.
+
+
+## Schema layer
+
+`ConfigSchema` validates the expected shape of resolved configuration. It is deliberately separate from policy.
+
+```text
+Schema:
+    type, required/optional, allowed values, numeric ranges, default metadata
+
+Policy:
+    precedence, conflicts, access, mutation, export
+
+Binding:
+    typed projection into application structs
+```
+
+This separation keeps the mechanism explicit: defaults are still facts, policy still governs behavior, and schema validates the resulting configuration contract.

@@ -12,28 +12,73 @@ void ResolvedConfig::set(ResolvedEntry entry) {
 
 bool ResolvedConfig::contains(const KeyPath& key) const { return entries_.contains(key.dotted()); }
 
-std::optional<Value> ResolvedConfig::get(const KeyPath& key) const {
+std::optional<Value> ResolvedConfig::get_value(const KeyPath& key) const {
     auto it = entries_.find(key.dotted());
     if (it == entries_.end()) return std::nullopt;
     return it->second.value;
 }
 
-std::string ResolvedConfig::get_string(const KeyPath& key, std::string fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_string(std::move(fallback));
+std::optional<std::string> ResolvedConfig::get_string(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_string();
 }
 
+std::optional<std::int64_t> ResolvedConfig::get_integer(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_integer();
+}
+
+std::optional<bool> ResolvedConfig::get_boolean(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_boolean();
+}
+
+std::optional<double> ResolvedConfig::get_floating(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_floating();
+}
+
+Value ResolvedConfig::get_value_or(const KeyPath& key, const Value& fallback) const {
+    auto value = get_value(key);
+    return value ? *value : fallback;
+}
+
+std::string ResolvedConfig::get_string_or(const KeyPath& key, std::string fallback) const {
+    auto value = get_string(key);
+    return value ? *value : fallback;
+}
+
+std::int64_t ResolvedConfig::get_integer_or(const KeyPath& key, std::int64_t fallback) const {
+    auto value = get_integer(key);
+    return value ? *value : fallback;
+}
+
+bool ResolvedConfig::get_boolean_or(const KeyPath& key, bool fallback) const {
+    auto value = get_boolean(key);
+    return value ? *value : fallback;
+}
+
+double ResolvedConfig::get_floating_or(const KeyPath& key, double fallback) const {
+    auto value = get_floating(key);
+    return value ? *value : fallback;
+}
+
+std::optional<Value> ResolvedConfig::get(const KeyPath& key) const { return get_value(key); }
+
 std::int64_t ResolvedConfig::get_int(const KeyPath& key, std::int64_t fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_int(fallback);
+    return get_integer_or(key, fallback);
 }
 
 bool ResolvedConfig::get_bool(const KeyPath& key, bool fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_bool(fallback);
+    return get_boolean_or(key, fallback);
+}
+
+double ResolvedConfig::get_double(const KeyPath& key, double fallback) const {
+    return get_floating_or(key, fallback);
 }
 
 const ResolvedEntry* ResolvedConfig::explain(const KeyPath& key) const {

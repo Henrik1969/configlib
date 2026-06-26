@@ -9,6 +9,7 @@
 #include <configlib/source.hpp>
 #include <configlib/value.hpp>
 
+#include <cstdint>
 #include <map>
 #include <optional>
 #include <set>
@@ -19,9 +20,13 @@ namespace configlib {
 
 enum class ExportMode {
     Effective,
+    EffectiveRedacted,
     ChangedOnly,
+    ChangedOnlyRedacted,
     RuntimeChangesOnly,
-    Redacted
+    RuntimeChangesOnlyRedacted,
+
+    Redacted = EffectiveRedacted
 };
 
 struct AccessRule {
@@ -56,7 +61,14 @@ class ConfigView;
 
 class ConfigTransaction {
 public:
+    ConfigTransaction() = delete;
     explicit ConfigTransaction(ConfigStore& store);
+
+    ConfigTransaction& set_value(KeyPath key, Value value);
+    ConfigTransaction& set_string(KeyPath key, std::string value);
+    ConfigTransaction& set_integer(KeyPath key, std::int64_t value);
+    ConfigTransaction& set_boolean(KeyPath key, bool value);
+    ConfigTransaction& set_floating(KeyPath key, double value);
 
     ConfigTransaction& set(KeyPath key, Value value);
     ConfigTransaction& erase(KeyPath key);
@@ -78,7 +90,6 @@ private:
     mutable DiagnosticLog diagnostics_;
 
     friend class ConfigStore;
-class ConfigView;
 };
 
 class ConfigStore {
@@ -89,15 +100,26 @@ public:
     static ConfigStore from_layers(ResolvedConfig defaults, ResolvedConfig base, PolicySet policies = {}, AccessPolicy access = {});
 
     [[nodiscard]] bool contains(const KeyPath& key) const;
+    [[nodiscard]] std::optional<Value> get_value(const KeyPath& key) const;
+    [[nodiscard]] std::optional<std::string> get_string(const KeyPath& key) const;
+    [[nodiscard]] std::optional<std::int64_t> get_integer(const KeyPath& key) const;
+    [[nodiscard]] std::optional<bool> get_boolean(const KeyPath& key) const;
+    [[nodiscard]] std::optional<double> get_floating(const KeyPath& key) const;
+
+    [[nodiscard]] Value get_value_or(const KeyPath& key, const Value& fallback) const;
+    [[nodiscard]] std::string get_string_or(const KeyPath& key, std::string fallback) const;
+    [[nodiscard]] std::int64_t get_integer_or(const KeyPath& key, std::int64_t fallback) const;
+    [[nodiscard]] bool get_boolean_or(const KeyPath& key, bool fallback) const;
+    [[nodiscard]] double get_floating_or(const KeyPath& key, double fallback) const;
+
     [[nodiscard]] std::optional<Value> get(const KeyPath& key) const;
-    [[nodiscard]] std::string get_string(const KeyPath& key, std::string fallback = {}) const;
     [[nodiscard]] std::int64_t get_int(const KeyPath& key, std::int64_t fallback = 0) const;
     [[nodiscard]] bool get_bool(const KeyPath& key, bool fallback = false) const;
 
     [[nodiscard]] bool has_runtime_change(const KeyPath& key) const;
     [[nodiscard]] std::string explain(const KeyPath& key) const;
     [[nodiscard]] std::string export_config(ExportMode mode = ExportMode::Effective) const;
-    [[nodiscard]] DiagnosticLog diagnostics() const;
+    [[nodiscard]] const DiagnosticLog& diagnostics() const;
     [[nodiscard]] ConfigView view(KeyPath prefix) const;
 
     ConfigTransaction begin_transaction();

@@ -54,8 +54,8 @@ int main(int argc, const char* const argv[]) {
         return 1;
     }
 
-    std::cout << "logging.level = " << result.config().get_string(KeyPath("logging.level")) << '\n';
-    std::cout << "server.port = " << result.config().get_int(KeyPath("server.port")) << '\n';
-    std::cout << "feature.enabled = " << (result.config().get_bool(KeyPath("feature.enabled")) ? "true" : "false") << '\n';
+    std::cout << "logging.level = " << result.config().get_string_or(KeyPath("logging.level"), "") << '\n';
+    std::cout << "server.port = " << result.config().get_integer_or(KeyPath("server.port"), 0) << '\n';
+    std::cout << "feature.enabled = " << (result.config().get_boolean_or(KeyPath("feature.enabled"), false) ? "true" : "false") << '\n';
     std::cout << "\n" << result.config().format_explanation(KeyPath("logging.level"));
 }

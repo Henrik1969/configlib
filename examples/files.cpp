@@ -12,7 +12,7 @@ static void append(configlib::FactSet& target, const configlib::FactSet& source)
 int main() {
     using namespace configlib;
 
-    const char* path = "./example.conf";
+    const char* path = "./examples/example.conf";
     {
         std::ofstream out(path);
         out << "# configlib v0.3 key=value demo\n";
@@ -54,7 +54,7 @@ int main() {
         return 1;
     }
 
-    std::cout << "logging.level=" << result.config().get_string(KeyPath("logging.level")) << '\n';
-    std::cout << "server.port=" << result.config().get_int(KeyPath("server.port")) << '\n';
+    std::cout << "logging.level=" << result.config().get_string_or(KeyPath("logging.level"), "") << '\n';
+    std::cout << "server.port=" << result.config().get_integer_or(KeyPath("server.port"), 0) << '\n';
     std::cout << result.config().format_explanation(KeyPath("server.port"));
 }

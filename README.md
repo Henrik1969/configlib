@@ -1,4 +1,4 @@
-# configlib v0.6.0
+# configlib v0.8.0
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,14 +6,14 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.6.0 adds explicit typed struct bindings over scoped `ConfigView`s, while preserving the fact/policy/resolver/store/view architecture from earlier releases.
+v0.8.0 is an API cleanup and stabilization-preparation release. It sharpens naming, fallback behavior, schema/policy boundaries, view/transaction validity, export-mode names, and documentation before wider dependency use.
 
-v0.5 extends v0.4 with scoped subtree views:
+Important current capabilities include:
 
 - `ConfigView` read-only scoped access into a `ConfigStore`
 - `ConfigStore::view(prefix)` helper
 - view-local getters such as `view.get_string("level")` for `logging.level`
-- fallback helpers such as `get_string_or`, `get_int_or`, `get_bool_or`, and `get_double_or`
+- explicit fallback helpers such as `get_string_or`, `get_integer_or`, `get_boolean_or`, and `get_floating_or`
 - subtree key listing
 - scoped explain
 - full-path scoped export
@@ -40,6 +40,8 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 ./build/configlib_files_cpp
 ./build/configlib_store_cpp
 ./build/configlib_views_cpp
+./build/configlib_bindings_cpp
+./build/configlib_schema_cpp
 ```
 
 ## Current scope
@@ -50,10 +52,10 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 - Scalar value model: null, bool, int64, double, string
 - Dotted key paths
 - Facts with source/provenance and precedence
-- Policies for required/defaulted/optional keys
-- Type validation
-- String allow-lists
-- Integer min/max validation
+- Policies for source precedence and conflict behavior
+- Schema validation for required/optional keys
+- Schema type validation
+- Schema string allow-lists and numeric ranges
 - Conflict strategies
 - Resolved config view
 - Explanation/provenance report
@@ -67,9 +69,13 @@ MYAPP_LOG_LEVEL=debug MYAPP_SERVER_PORT=9000 ./build/configlib_loaders_cpp --log
 - Runtime `ConfigStore`
 - Transactional runtime mutation
 - Runtime access policy
-- Simple export modes
+- Explicit export modes including redacted variants
 - Scoped read-only `ConfigView`
 - Scoped export, local export, explain, and key listing
+- Explicit typed `StructBinding<T>` projections
+- In-code `ConfigSchema` validation rules
+- Required/optional schema keys
+- Schema type checks, string allow-lists, numeric ranges, and documented defaults
 
 
 ## When not to use configlib
@@ -102,7 +108,7 @@ See `docs/`. Start with:
 - `docs/FILE_DISCOVERY.md`
 - `docs/STORE.md`
 - `docs/VIEWS.md`
+- `docs/BINDINGS.md`
+- `docs/SCHEMA.md`
 - `docs/PLUGIN_MODEL.md`
 - `docs/CHANGELOG.md`
-
-- [Struct bindings](docs/BINDINGS.md)

@@ -28,7 +28,7 @@ bool validate_value(const KeyPolicy& policy, const Fact& fact, DiagnosticLog& di
     }
 
     if (!policy.allowed_strings.empty() && fact.value.type() == ValueType::String) {
-        const auto value = fact.value.as_string();
+        const auto value = fact.value.as_string().value_or(std::string{});
         if (!policy.allowed_strings.contains(value)) {
             diagnostics.error("CONFIG_STRING_NOT_ALLOWED", "value '" + value + "' is not allowed", fact.key, fact.source);
             ok = false;
@@ -36,7 +36,7 @@ bool validate_value(const KeyPolicy& policy, const Fact& fact, DiagnosticLog& di
     }
 
     if (fact.value.type() == ValueType::Int) {
-        const auto value = fact.value.as_int();
+        const auto value = fact.value.as_integer().value_or(0);
         if (policy.min_int && value < *policy.min_int) {
             diagnostics.error("CONFIG_INT_TOO_SMALL", "integer value below configured minimum", fact.key, fact.source);
             ok = false;
@@ -94,13 +94,8 @@ ResolveResult resolve(const FactSet& facts, const PolicySet& policies) {
     }
 
     for (const auto& [key_name, policy] : policies.key_policies()) {
-        if (!grouped.contains(key_name)) {
-            if (policy.missing == MissingPolicy::Required) {
-                diagnostics.error("CONFIG_REQUIRED_MISSING", "required configuration key is missing", policy.key);
-            } else if (policy.missing == MissingPolicy::UseDefault && policy.default_value) {
-                Fact default_fact{policy.key, *policy.default_value, Source::internal_default("policy-default"), policies.precedence_for(SourceKind::InternalDefault), FactRole::Application, 0};
-                grouped[key_name].push_back(default_fact);
-            }
+        if (!grouped.contains(key_name) && policy.missing == MissingPolicy::Required) {
+            diagnostics.error("CONFIG_REQUIRED_MISSING", "required configuration key is missing", policy.key);
         }
     }
 

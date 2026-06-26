@@ -1,3 +1,14 @@
+# Roadmap
+
+## v0.8.0 completed
+
+- API cleanup and stabilization-preparation pass.
+- Schema/policy/access boundary clarified.
+- No silent `Value::as_*` fallback.
+- No default-constructible `ConfigView` or `ConfigTransaction`.
+- Explicit redacted export mode names.
+- API stability, review, lifetime, and code-documentation notes added.
+
 # configlib roadmap
 
 ## Implemented
@@ -121,3 +132,14 @@ Programmer manual added in v0.5.5. Future releases should keep language-binding 
 ## Completed in v0.6.0
 
 - Explicit typed binding helpers over `ConfigView`.
+
+
+## v0.7.0 completed
+
+- Added in-code schema/contract validation.
+- Added validation over `ResolvedConfig` and scoped `ConfigView`.
+- Added schema diagnostics for missing required keys, type mismatches, string allow-list violations, and numeric range violations.
+
+## Next stabilization direction
+
+The next recommended phase is API cleanup and naming review before the C ABI stabilization pass. Avoid plugin ABI, live reload, watchers, i18n machinery, or Flowcore integration until the small core API is stable.

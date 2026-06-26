@@ -26,7 +26,7 @@ bool validate_policy_value(const KeyPolicy* policy, const KeyPath& key, const Va
     }
 
     if (!policy->allowed_strings.empty() && value.type() == ValueType::String) {
-        const auto text = value.as_string();
+        const auto text = value.as_string().value_or(std::string{});
         if (!policy->allowed_strings.contains(text)) {
             diagnostics.error("CONFIG_STORE_STRING_NOT_ALLOWED", "value '" + text + "' is not allowed", key, Source::runtime("transaction"));
             ok = false;
@@ -34,7 +34,7 @@ bool validate_policy_value(const KeyPolicy* policy, const KeyPath& key, const Va
     }
 
     if (value.type() == ValueType::Int) {
-        const auto n = value.as_int();
+        const auto n = value.as_integer().value_or(0);
         if (policy->min_int && n < *policy->min_int) {
             diagnostics.error("CONFIG_STORE_INT_TOO_SMALL", "integer value below configured minimum", key, Source::runtime("transaction"));
             ok = false;
@@ -116,13 +116,33 @@ const std::map<std::string, AccessRule>& AccessPolicy::rules() const { return ru
 
 ConfigTransaction::ConfigTransaction(ConfigStore& store) : store_(&store) {}
 
-ConfigTransaction& ConfigTransaction::set(KeyPath key, Value value) {
+ConfigTransaction& ConfigTransaction::set_value(KeyPath key, Value value) {
     const auto dotted = key.dotted();
     staged_sets_[dotted] = {std::move(key), std::move(value)};
     staged_erases_.erase(dotted);
     staged_reset_base_.erase(dotted);
     staged_reset_default_.erase(dotted);
     return *this;
+}
+
+ConfigTransaction& ConfigTransaction::set_string(KeyPath key, std::string value) {
+    return set_value(std::move(key), Value(std::move(value)));
+}
+
+ConfigTransaction& ConfigTransaction::set_integer(KeyPath key, std::int64_t value) {
+    return set_value(std::move(key), Value(value));
+}
+
+ConfigTransaction& ConfigTransaction::set_boolean(KeyPath key, bool value) {
+    return set_value(std::move(key), Value(value));
+}
+
+ConfigTransaction& ConfigTransaction::set_floating(KeyPath key, double value) {
+    return set_value(std::move(key), Value(value));
+}
+
+ConfigTransaction& ConfigTransaction::set(KeyPath key, Value value) {
+    return set_value(std::move(key), std::move(value));
 }
 
 ConfigTransaction& ConfigTransaction::erase(KeyPath key) {
@@ -214,14 +234,14 @@ ConfigStore ConfigStore::from_result(ResolveResult result, PolicySet policies, A
     store.access_ = std::move(access);
     store.diagnostics_ = result.diagnostics();
 
-    for (const auto& [_, policy] : store.policies_.key_policies()) {
-        if (policy.default_value) {
-            store.defaults_.set({policy.key, *policy.default_value, Source::internal_default("policy-default"), {}});
-        }
-    }
     for (const auto& [_, entry] : store.base_.entries()) {
         if (entry.chosen_source.kind() == SourceKind::InternalDefault) {
             store.defaults_.set(entry);
+        }
+        for (const auto& candidate : entry.candidates) {
+            if (candidate.source.kind() == SourceKind::InternalDefault) {
+                store.defaults_.set({candidate.key, candidate.value, candidate.source, {candidate}});
+            }
         }
     }
     return store;
@@ -236,32 +256,73 @@ ConfigStore ConfigStore::from_layers(ResolvedConfig defaults, ResolvedConfig bas
     return store;
 }
 
-bool ConfigStore::contains(const KeyPath& key) const { return get(key).has_value(); }
+bool ConfigStore::contains(const KeyPath& key) const { return get_value(key).has_value(); }
 
-std::optional<Value> ConfigStore::get(const KeyPath& key) const {
+std::optional<Value> ConfigStore::get_value(const KeyPath& key) const {
     const auto dotted = key.dotted();
     auto override_it = runtime_overrides_.find(dotted);
     if (override_it != runtime_overrides_.end()) return override_it->second.second;
     if (runtime_erases_.contains(dotted)) return std::nullopt;
-    return base_.get(key);
+    return base_.get_value(key);
 }
 
-std::string ConfigStore::get_string(const KeyPath& key, std::string fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_string(std::move(fallback));
+std::optional<std::string> ConfigStore::get_string(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_string();
 }
+
+std::optional<std::int64_t> ConfigStore::get_integer(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_integer();
+}
+
+std::optional<bool> ConfigStore::get_boolean(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_boolean();
+}
+
+std::optional<double> ConfigStore::get_floating(const KeyPath& key) const {
+    auto value = get_value(key);
+    if (!value) return std::nullopt;
+    return value->as_floating();
+}
+
+Value ConfigStore::get_value_or(const KeyPath& key, const Value& fallback) const {
+    auto value = get_value(key);
+    return value ? *value : fallback;
+}
+
+std::string ConfigStore::get_string_or(const KeyPath& key, std::string fallback) const {
+    auto value = get_string(key);
+    return value ? *value : fallback;
+}
+
+std::int64_t ConfigStore::get_integer_or(const KeyPath& key, std::int64_t fallback) const {
+    auto value = get_integer(key);
+    return value ? *value : fallback;
+}
+
+bool ConfigStore::get_boolean_or(const KeyPath& key, bool fallback) const {
+    auto value = get_boolean(key);
+    return value ? *value : fallback;
+}
+
+double ConfigStore::get_floating_or(const KeyPath& key, double fallback) const {
+    auto value = get_floating(key);
+    return value ? *value : fallback;
+}
+
+std::optional<Value> ConfigStore::get(const KeyPath& key) const { return get_value(key); }
 
 std::int64_t ConfigStore::get_int(const KeyPath& key, std::int64_t fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_int(fallback);
+    return get_integer_or(key, fallback);
 }
 
 bool ConfigStore::get_bool(const KeyPath& key, bool fallback) const {
-    auto value = get(key);
-    if (!value) return fallback;
-    return value->as_bool(fallback);
+    return get_boolean_or(key, fallback);
 }
 
 bool ConfigStore::has_runtime_change(const KeyPath& key) const {
@@ -295,12 +356,12 @@ std::string ConfigStore::export_config(ExportMode mode) const {
     auto emit_key = [&](const KeyPath& key, const Value& value) {
         const auto dotted = key.dotted();
         if (emitted.contains(dotted)) return;
-        if (!access_.is_exportable(key) && mode != ExportMode::Redacted) return;
+        if (!access_.is_exportable(key) && mode != ExportMode::EffectiveRedacted && mode != ExportMode::ChangedOnlyRedacted && mode != ExportMode::RuntimeChangesOnlyRedacted) return;
         write_entry(out, dotted, value, access_.is_secret(key));
         emitted.insert(dotted);
     };
 
-    if (mode == ExportMode::ChangedOnly || mode == ExportMode::RuntimeChangesOnly) {
+    if (mode == ExportMode::ChangedOnly || mode == ExportMode::ChangedOnlyRedacted || mode == ExportMode::RuntimeChangesOnly || mode == ExportMode::RuntimeChangesOnlyRedacted) {
         for (const auto& [_, item] : runtime_overrides_) emit_key(item.first, item.second);
         for (const auto& dotted : runtime_erases_) {
             KeyPath key(dotted);
@@ -316,7 +377,7 @@ std::string ConfigStore::export_config(ExportMode mode) const {
     return out.str();
 }
 
-DiagnosticLog ConfigStore::diagnostics() const { return diagnostics_; }
+const DiagnosticLog& ConfigStore::diagnostics() const { return diagnostics_; }
 
 ConfigView ConfigStore::view(KeyPath prefix) const { return ConfigView(*this, std::move(prefix)); }
 
@@ -328,9 +389,7 @@ const PolicySet& ConfigStore::policies() const { return policies_; }
 const AccessPolicy& ConfigStore::access_policy() const { return access_; }
 
 std::optional<Value> ConfigStore::default_value_for(const KeyPath& key) const {
-    if (auto value = defaults_.get(key)) return value;
-    if (const auto* policy = policies_.find_key_policy(key); policy && policy->default_value) return policy->default_value;
-    return std::nullopt;
+    return defaults_.get_value(key);
 }
 
 bool ConfigStore::validate_mutation(const KeyPath& key, const std::optional<Value>& value, DiagnosticLog& diagnostics) const {
@@ -369,9 +428,11 @@ bool ConfigStore::apply_transaction(const ConfigTransaction& tx) {
 const char* export_mode_name(ExportMode mode) {
     switch (mode) {
         case ExportMode::Effective: return "effective";
+        case ExportMode::EffectiveRedacted: return "effective-redacted";
         case ExportMode::ChangedOnly: return "changed-only";
+        case ExportMode::ChangedOnlyRedacted: return "changed-only-redacted";
         case ExportMode::RuntimeChangesOnly: return "runtime-changes-only";
-        case ExportMode::Redacted: return "redacted";
+        case ExportMode::RuntimeChangesOnlyRedacted: return "runtime-changes-only-redacted";
     }
     return "unknown";
 }

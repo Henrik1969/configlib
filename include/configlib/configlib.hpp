@@ -8,6 +8,7 @@
 #include <configlib/loaders.hpp>
 #include <configlib/policy.hpp>
 #include <configlib/result.hpp>
+#include <configlib/schema.hpp>
 #include <configlib/source.hpp>
 #include <configlib/store.hpp>
 #include <configlib/value.hpp>

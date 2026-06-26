@@ -139,7 +139,7 @@ Modes:
 - `Effective`: export the current effective view
 - `ChangedOnly`: export runtime changes only
 - `RuntimeChangesOnly`: synonym-style mode for runtime overrides/erasures
-- `Redacted`: export effective view while redacting secret values when exported
+- `EffectiveRedacted`: export effective view while redacting secret values when exported
 
 Current export is intentionally simple `key = value` text. JSON/TOML/YAML emitters should remain separate adapters later.
 

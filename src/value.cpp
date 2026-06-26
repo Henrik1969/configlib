@@ -3,6 +3,7 @@
 #include <configlib/value.hpp>
 
 #include <sstream>
+#include <utility>
 
 namespace configlib {
 
@@ -42,35 +43,47 @@ std::string Value::to_string() const {
     return {};
 }
 
-bool Value::as_bool(bool fallback) const {
+std::optional<bool> Value::as_boolean() const {
     if (auto ptr = std::get_if<bool>(&value_)) return *ptr;
-    return fallback;
+    return std::nullopt;
 }
 
-std::int64_t Value::as_int(std::int64_t fallback) const {
+std::optional<std::int64_t> Value::as_integer() const {
     if (auto ptr = std::get_if<std::int64_t>(&value_)) return *ptr;
-    return fallback;
+    return std::nullopt;
 }
 
-double Value::as_double(double fallback) const {
+std::optional<double> Value::as_floating() const {
     if (auto ptr = std::get_if<double>(&value_)) return *ptr;
     if (auto iptr = std::get_if<std::int64_t>(&value_)) return static_cast<double>(*iptr);
-    return fallback;
+    return std::nullopt;
 }
 
-std::string Value::as_string(std::string fallback) const {
+std::optional<std::string> Value::as_string() const {
     if (auto ptr = std::get_if<std::string>(&value_)) return *ptr;
-    return fallback;
+    return std::nullopt;
+}
+
+bool Value::as_boolean_or(bool fallback) const { return as_boolean().value_or(fallback); }
+std::int64_t Value::as_integer_or(std::int64_t fallback) const { return as_integer().value_or(fallback); }
+double Value::as_floating_or(double fallback) const { return as_floating().value_or(fallback); }
+std::string Value::as_string_or(std::string_view fallback) const {
+    if (auto value = as_string()) return *value;
+    return std::string(fallback);
 }
 
 bool Value::is_null() const { return std::holds_alternative<std::monostate>(value_); }
+bool Value::is_boolean() const { return std::holds_alternative<bool>(value_); }
+bool Value::is_integer() const { return std::holds_alternative<std::int64_t>(value_); }
+bool Value::is_floating() const { return std::holds_alternative<double>(value_); }
+bool Value::is_string() const { return std::holds_alternative<std::string>(value_); }
 
 const char* value_type_name(ValueType type) {
     switch (type) {
         case ValueType::Null: return "null";
         case ValueType::Bool: return "bool";
-        case ValueType::Int: return "int";
-        case ValueType::Double: return "double";
+        case ValueType::Int: return "integer";
+        case ValueType::Double: return "floating";
         case ValueType::String: return "string";
     }
     return "unknown";

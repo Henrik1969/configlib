@@ -68,9 +68,9 @@ Fallback helpers:
 
 ```cpp
 view.get_string_or(KeyPath("level"), "info");
-view.get_int_or(KeyPath("max_files"), 32);
-view.get_bool_or(KeyPath("color"), true);
-view.get_double_or(KeyPath("scale"), 1.0);
+view.get_integer_or(KeyPath("max_files"), 32);
+view.get_boolean_or(KeyPath("color"), true);
+view.get_floating_or(KeyPath("scale"), 1.0);
 ```
 
 Fallback getters are convenience helpers only. Authoritative defaults should still be expressed as facts and policies.
@@ -149,7 +149,7 @@ Views support the same `ExportMode` values as `ConfigStore`:
 - `ExportMode::Effective`
 - `ExportMode::ChangedOnly`
 - `ExportMode::RuntimeChangesOnly`
-- `ExportMode::Redacted`
+- `ExportMode::EffectiveRedacted`
 
 Changed-only export is scoped to the view subtree.
 

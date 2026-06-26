@@ -357,7 +357,7 @@ auto store = ConfigStore::from_result(std::move(result), policies);
 auto logging = store.view(KeyPath("logging"));
 
 std::string level = logging.get_string_or(KeyPath("level"), "info");
-bool color = logging.get_bool_or(KeyPath("color"), true);
+bool color = logging.get_boolean_or(KeyPath("color"), true);
 ```
 
 The local key `level` is qualified to `logging.level`.
@@ -383,9 +383,9 @@ double get_double(const KeyPath& local_key, double fallback = 0.0) const;
 
 ```cpp
 std::string get_string_or(const KeyPath& local_key, std::string fallback) const;
-std::int64_t get_int_or(const KeyPath& local_key, std::int64_t fallback) const;
-bool get_bool_or(const KeyPath& local_key, bool fallback) const;
-double get_double_or(const KeyPath& local_key, double fallback) const;
+std::int64_t get_integer_or(const KeyPath& local_key, std::int64_t fallback) const;
+bool get_boolean_or(const KeyPath& local_key, bool fallback) const;
+double get_floating_or(const KeyPath& local_key, double fallback) const;
 ```
 
 Fallback helpers are convenience only. Authoritative defaults still belong in facts/policies.
@@ -426,3 +426,36 @@ Both honor access policy for secrets and exportability.
 ## Struct bindings
 
 `StructBinding<T>` reads a scoped `ConfigView` into an ordinary C++ struct. It supports explicit field binders for strings, booleans, integers, and doubles, including required fields and fallback values. See `docs/BINDINGS.md`.
+
+
+## Schema API
+
+Header:
+
+```cpp
+#include <configlib/schema.hpp>
+```
+
+Main types:
+
+```cpp
+configlib::ConfigSchema
+configlib::SchemaRule
+configlib::SchemaPathBuilder
+configlib::SchemaValidationResult
+```
+
+Common pattern:
+
+```cpp
+configlib::ConfigSchema schema;
+
+schema.path(configlib::KeyPath("server.port"))
+    .integer()
+    .required()
+    .range(static_cast<std::int64_t>(1), static_cast<std::int64_t>(65535));
+
+auto checked = schema.validate(result.config());
+```
+
+See `docs/SCHEMA.md` for the full explanation.
