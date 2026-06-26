@@ -2,6 +2,17 @@
 
 `configlib.h` is the stable binding surface for C and for non-C++ language bindings.
 
+## Version smoke test
+
+The C ABI exposes a tiny stable version surface that is useful for binding and consumer smoke tests:
+
+```c
+printf("%s\n", configlib_version_string());
+```
+
+The returned pointer is a static null-terminated string and must not be freed.
+
+
 The C ABI deliberately uses opaque handles, scalar values, explicit status codes, and borrowed strings. It does not expose C++ exceptions, STL containers, templates, references, or ownership rules that are hard for other languages to model.
 
 ## Design rules

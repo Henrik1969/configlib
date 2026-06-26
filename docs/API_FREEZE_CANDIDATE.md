@@ -1,6 +1,6 @@
 # API freeze candidate
 
-`configlib` v0.11 is the pre-freeze cleanup point before the v1 stability track.
+`configlib` v0.11 was the pre-freeze cleanup point before the v1 stability track. `configlib` v0.12 records the release-candidate preparation rule: after this point, public-surface work should be additive unless fire testing proves a defect that must be fixed before v1.0.
 
 The purpose of this stage is to remove public-surface mistakes before they become stable fossils. After the actual freeze candidate is accepted, new work should be additive unless a serious correctness, safety, or security defect is found before v1.0.
 
@@ -65,3 +65,8 @@ For every public name and behavior, ask:
 > Would I be willing to support this after v1.0?
 
 If the answer is no, fix it before freeze.
+
+
+## v0.12 release-candidate ruling
+
+See `RELEASE_CANDIDATE.md` for the v1 checklist, additive-only rule, and exception rule for defects discovered during fire testing.

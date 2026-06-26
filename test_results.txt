@@ -1,0 +1,187 @@
+Report directory: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900
+
+=== RUN: git status and version files ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/00_git_status.log
+CMD: git status && echo && git log --oneline --decorate -n 12 && echo && grep -R "version_string\|VERSION" -n include/configlib/version.hpp include/configlib/configlib.h src/c_api.cpp CMakeLists.txt || true
+PASS: git status and version files
+
+=== RUN: baseline build/test ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/10_baseline.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' && cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' -G Ninja && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' -j'20' && ctest --test-dir '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' --output-on-failure
+PASS: baseline build/test
+
+=== RUN: ASAN/UBSAN build/test ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/20_asan_ubsan.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-asan' && cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-asan' -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined' -DCMAKE_SHARED_LINKER_FLAGS='-fsanitize=address,undefined' && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-asan' -j'20' && ASAN_OPTIONS=detect_leaks=1:strict_string_checks=1:check_initialization_order=1 UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1 ctest --test-dir '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-asan' --output-on-failure
+PASS: ASAN/UBSAN build/test
+
+=== RUN/INFRA: clang++ standard library smoke ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/30_clang_toolchain.log
+CMD: cat >/tmp/configlib_clang_smoke.cpp <<'CPP'
+#include <string>
+#include <map>
+#include <cstdint>
+int main(){ std::string s = "ok"; std::map<int,int> m; m[1]=2; return s.empty() || m[1] != 2; }
+CPP
+clang++ /tmp/configlib_clang_smoke.cpp -o /tmp/configlib_clang_smoke && /tmp/configlib_clang_smoke
+INFRA: clang++ standard library smoke -- /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/30_clang_toolchain.log
+
+=== RUN: install tree ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/logs/40_install.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test' && cmake --install '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' --prefix '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test' && find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test' -maxdepth 6 -type f | sort
+PASS: install tree
+
+=== RUN: external CMake C++ consumer version_string ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/50_cmake_consumer.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer' && mkdir -p '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer' && cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer/CMakeLists.txt' <<'CONSUMER_CMAKE'
+cmake_minimum_required(VERSION 3.16)
+project(configlib_consumer LANGUAGES CXX)
+find_package(configlib CONFIG REQUIRED)
+add_executable(consumer main.cpp)
+target_link_libraries(consumer PRIVATE configlib::configlib)
+CONSUMER_CMAKE
+cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer/main.cpp' <<'CONSUMER_CPP'
+#include <configlib/version.hpp>
+#include <iostream>
+int main() {
+    std::cout << configlib::version_string() << "\n";
+    return 0;
+}
+CONSUMER_CPP
+cmake -S '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer' -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer/build' -G Ninja -DCMAKE_PREFIX_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test'
+cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer/build'
+LD_LIBRARY_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64' '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/cmake-consumer/build/consumer'
+PASS: external CMake C++ consumer version_string
+
+=== RUN: pkg-config C consumer configlib_version_string ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/51_pkgconfig_c.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer' && mkdir -p '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer' && cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer/main.c' <<'CONSUMER_C'
+#include <configlib/configlib.h>
+#include <stdio.h>
+int main(void) {
+    printf("%s\n", configlib_version_string());
+    return 0;
+}
+CONSUMER_C
+PKG_CONFIG_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib/pkgconfig:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64/pkgconfig' cc '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer/main.c' -o '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer/consumer' $(PKG_CONFIG_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib/pkgconfig:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64/pkgconfig' pkg-config --cflags --libs configlib)
+LD_LIBRARY_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64' '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/c-consumer/consumer'
+PASS: pkg-config C consumer configlib_version_string
+
+=== RUN: Python ctypes version_string ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/52_python_ctypes.log
+CMD: cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/python_ctypes_smoke.py' <<'PY'
+import ctypes
+import pathlib
+prefix = pathlib.Path('/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test')
+libs = sorted(prefix.glob('lib*/libconfiglib.so*'))
+if not libs:
+    raise SystemExit('no installed libconfiglib.so found')
+lib = ctypes.CDLL(str(libs[0]))
+lib.configlib_version_string.restype = ctypes.c_char_p
+value = lib.configlib_version_string()
+if not value:
+    raise SystemExit('null version string')
+print(value.decode())
+PY
+python3 '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/python_ctypes_smoke.py'
+PASS: Python ctypes version_string
+
+=== RUN: LuaJIT FFI version_string ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/53_luajit.log
+CMD: cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/luajit_ffi_smoke.lua' <<'LUA'
+local ffi = require('ffi')
+ffi.cdef[[
+const char* configlib_version_string(void);
+]]
+local lib = ffi.load('configlib')
+print(ffi.string(lib.configlib_version_string()))
+LUA
+LD_LIBRARY_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64' luajit '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/luajit_ffi_smoke.lua'
+PASS: LuaJIT FFI version_string
+
+=== RUN: Rust FFI version_string ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/54_rust.log
+CMD: cat > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/rust_ffi_smoke.rs' <<'RS'
+use std::ffi::CStr;
+use std::os::raw::c_char;
+
+unsafe extern "C" {
+    fn configlib_version_string() -> *const c_char;
+}
+
+fn main() {
+    unsafe {
+        let ptr = configlib_version_string();
+        assert!(!ptr.is_null());
+        println!("{}", CStr::from_ptr(ptr).to_str().unwrap());
+    }
+}
+RS
+rustc '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/rust_ffi_smoke.rs' -L native='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib' -L native='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64' -l configlib -o '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/rust_ffi_smoke'
+LD_LIBRARY_PATH='/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib:/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/artifacts/install-test/lib64' '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/consumers/rust_ffi_smoke'
+PASS: Rust FFI version_string
+
+=== RUN: Valgrind discovered test executables ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/valgrind/60_valgrind.log
+CMD: set -e
+mapfile -t tests < <(find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build' -type f -executable \( -name 'test_*' -o -name '*test*' \) ! -path '*/CMakeFiles/*' | sort)
+printf 'Discovered %s test executables\n' "${#tests[@]}"
+printf '%s\n' "${tests[@]}"
+test "${#tests[@]}" -gt 0
+for exe in "${tests[@]}"; do
+    echo '--- valgrind:' "$exe"
+    valgrind --leak-check=full --show-leak-kinds=all --error-exitcode=99 "$exe"
+done
+PASS: Valgrind discovered test executables
+
+=== RUN: Doxygen HTML output discovery ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/docs/70_doxygen_html.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' && cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' -G Ninja -DCONFIGLIB_BUILD_DOCS=ON && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' --target configlib_docs
+echo 'index.html files:'
+find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' -name index.html -print | tee '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/docs/index_files.txt'
+test -s '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/docs/index_files.txt'
+FAIL: Doxygen HTML output discovery
+
+=== RUN: Doxygen LaTeX/PDF output discovery ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/docs/71_doxygen_pdf.log
+CMD: test -d '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' || (cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' -G Ninja -DCONFIGLIB_BUILD_DOCS=ON && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' --target configlib_docs)
+latex_dir=$(find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-docs' -type d -name latex | head -n1)
+echo "latex_dir=$latex_dir"
+test -n "$latex_dir"
+cd "$latex_dir"
+make
+find . -name '*.pdf' -print
+pdf=$(find . -name '*.pdf' | head -n1)
+test -n "$pdf"
+cp "$pdf" '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/docs/configlib_refman.pdf'
+PASS: Doxygen LaTeX/PDF output discovery
+
+=== RUN: ABI dump RelWithDebInfo ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/abi/80_abi_dumper.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' && cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED_LIBS=ON && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -j'20'
+lib=$(find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -name 'libconfiglib.so*' -type f | head -n1)
+echo "lib=$lib"
+test -n "$lib"
+abi-dumper "$lib" -o '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/abi/configlib.abi' -lver local
+PASS: ABI dump RelWithDebInfo
+
+=== RUN: abidw RelWithDebInfo ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/abi/81_abidw.log
+CMD: test -d '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' || (cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED_LIBS=ON && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -j'20')
+lib=$(find '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-abi' -name 'libconfiglib.so*' -type f | head -n1)
+echo "lib=$lib"
+test -n "$lib"
+abidw "$lib" > '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/abi/configlib.abixml'
+PASS: abidw RelWithDebInfo
+
+=== RUN: gcovr coverage quick ===
+LOG: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/coverage/90_gcovr.log
+CMD: rm -rf '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-coverage' && cmake -S . -B '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-coverage' -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS='--coverage -O0 -g' -DCMAKE_CXX_FLAGS='--coverage -O0 -g' -DCMAKE_EXE_LINKER_FLAGS='--coverage' -DCMAKE_SHARED_LINKER_FLAGS='--coverage' && cmake --build '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-coverage' -j'20' && ctest --test-dir '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/builds/build-coverage' --output-on-failure && gcovr -r . --html --html-details -o '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/coverage/coverage.html' --txt -o '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/coverage/coverage.txt' && cat '/home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/coverage/coverage.txt'
+PASS: gcovr coverage quick
+
+============================================================
+configlib quick fire retest complete
+Report: /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900/SUMMARY.md
+Logs:   /home/henrik/Projekter/Udvikling/_reports/configlib/configlib_quick_fire_retest_20260627_005900
+PASS=14 FAIL=1 INFRA=1 SKIP=0
+============================================================

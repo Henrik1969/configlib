@@ -169,6 +169,7 @@ extern "C" {
 int configlib_version_major(void) { return CONFIGLIB_VERSION_MAJOR; }
 int configlib_version_minor(void) { return CONFIGLIB_VERSION_MINOR; }
 int configlib_version_patch(void) { return CONFIGLIB_VERSION_PATCH; }
+const char* configlib_version_string(void) { return CONFIGLIB_VERSION_STRING; }
 
 const char* configlib_status_name(configlib_status status) {
     switch (status) {

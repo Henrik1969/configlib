@@ -2,12 +2,12 @@
 
 `configlib` is still pre-1.0.
 
-Version `0.8.0` is the API cleanup and stabilization-preparation release. It is allowed to rename or sharpen public C++ APIs before other projects begin to depend on them.
+Version `0.13.1` is a fire-testing follow-up release after the release-candidate preparation point. The intended v1 public surface remains additive-only unless fire testing proves a correctness, safety, security, or serious usability defect that must be fixed before v1.0. v0.13.1 adds stable version-string helpers because external-consumer and binding smoke tests proved that this small ABI/API affordance should exist before v1.
 
 ## Current promise
 
-- The C++ API is source-oriented and may still change before `1.0.0`.
-- The C ABI is the intended long-term binding surface, but it is not yet at parity with the C++ feature set.
+- The C++ API is an API-freeze candidate and should only change additively unless fire testing proves a defect.
+- The C ABI is the intended long-term binding surface for non-C++ languages and should only change additively unless fire testing proves a defect.
 - `1.0.0` will mark the first stable dependency target.
 
 ## Naming rules

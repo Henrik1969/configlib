@@ -92,6 +92,10 @@ std::optional<ValueType> expected_type_for(const PolicySet& policies, const KeyP
 }
 
 void add_env_fact(LoadReport& report, const PolicySet& policies, KeyPath key, const std::string& variable, const std::string& raw, std::optional<ValueType> declared_type) {
+    if (!key.valid()) {
+        report.diagnostics.error("CONFIG_ENV_BAD_KEY", "environment variable mapped to an invalid dotted key", key, Source::environment(variable));
+        return;
+    }
     const auto chosen_type = declared_type ? declared_type : expected_type_for(policies, key);
     if (chosen_type) {
         auto parsed = parse_value(raw, *chosen_type);
@@ -152,6 +156,10 @@ LoadReport load_key_value_file(const std::string& path, const PolicySet& policie
 
         if (!section.empty() && key_text.find('.') == std::string::npos) key_text = section + "." + key_text;
         KeyPath key(key_text);
+        if (!key.valid()) {
+            report.diagnostics.error("CONFIG_FILE_BAD_KEY", "invalid dotted key", key, Source::file(path + ":" + std::to_string(line_no)));
+            continue;
+        }
         Value value;
         if (auto expected = expected_type_for(policies, key)) {
             auto parsed = parse_value(unquote_copy(value_text), *expected);
@@ -216,7 +224,12 @@ bool DiscoveryReport::ok() const { return load.ok(); }
 LoadReport load_internal_defaults(const InternalDefaultsProvider& provider, const PolicySet& policies) {
     LoadReport report;
     for (const auto& [key, value] : provider.defaults()) {
-        report.facts.add(KeyPath(key), value, Source::internal_default("internal-defaults-provider"), policies.precedence_for(SourceKind::InternalDefault));
+        KeyPath path(key);
+        if (!path.valid()) {
+            report.diagnostics.error("CONFIG_DEFAULT_BAD_KEY", "internal default has an invalid dotted key", path, Source::internal_default("internal-defaults-provider"));
+            continue;
+        }
+        report.facts.add(std::move(path), value, Source::internal_default("internal-defaults-provider"), policies.precedence_for(SourceKind::InternalDefault));
     }
     return report;
 }
@@ -303,6 +316,11 @@ LoadReport load_cli(const CliLoaderPolicy& cli_policy, const PolicySet& policies
         const auto* rule = find_cli_rule(cli_policy.rules(), option);
         if (!rule) {
             complain_unknown(report.diagnostics, cli_policy.unknown_inputs(), "CONFIG_CLI_UNKNOWN", "CLI option has no loader rule", Source::cli(option));
+            continue;
+        }
+
+        if (!rule->key.valid()) {
+            report.diagnostics.error("CONFIG_CLI_BAD_KEY", "CLI option mapped to an invalid dotted key", rule->key, Source::cli(option));
             continue;
         }
 

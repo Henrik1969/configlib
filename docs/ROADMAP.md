@@ -1,5 +1,26 @@
 # Roadmap
 
+## v0.13.1 completed
+
+- Added stable C++ and C ABI version-string helpers discovered as useful by local fire-test gauntlet exploration.
+- Kept the fire-test gauntlet itself external; it is future generalized tooling, not part of configlib proper.
+
+## v0.13.0 completed
+
+- Added `tests/test_fire.cpp`, the first trial-by-fire test suite.
+- Added resolver rejection for malformed dotted fact keys with `CONFIG_INVALID_KEY`.
+- Added built-in loader-boundary rejection for malformed file/env/CLI/default keys.
+- Added regression tests for ambiguous same-priority facts, identical duplicate facts, transaction failure state preservation, scoped-view isolation, export/redaction non-leakage, and deterministic stress behavior.
+- Validated normal, ASAN/UBSAN, and fresh-tarball builds.
+
+## v0.12.0 completed
+
+- Added `docs/RELEASE_CANDIDATE.md`.
+- Marked the release-candidate preparation track.
+- Recorded the additive-only rule for post-v0.12 work unless fire testing proves a serious defect.
+- Added a v1 checklist covering build/install, public API, behavior, documentation, and fire-test readiness.
+- Kept v0.12.0 behavior-neutral so v0.13 could focus on hostile testing and failure semantics.
+
 ## v0.11.0 completed
 
 - Performed the pre-freeze tight-comb API cleanup pass.
@@ -19,16 +40,20 @@
 - Updated build/HOWTO documentation for local-prefix installs and dependency consumption.
 - Kept v0.10.0 behavior-neutral so the next track can focus on API freeze review.
 
-## Next: v0.11 API freeze candidate
+## Next: continue v0.13 fire testing / v1 release candidate hardening
 
-The next recommended phase is a final public-surface review before fire testing:
+The next recommended phase is hostile and edge-case testing before v1:
 
-- C++ public header naming audit.
-- C ABI naming/ownership audit.
-- Include hygiene review.
-- Deprecated/awkward symbols identified before v1.
-- Confirm examples use the preferred API shape.
-- Confirm docs match the actual API.
+- Same-priority conflict and false-claim tests.
+- Schema and policy rejection tests.
+- Store/view isolation tests.
+- Transaction failure and rollback behavior tests.
+- Export/redaction safety tests.
+- C ABI misuse tests.
+- Malformed loader input tests.
+- Sanitizer, fuzzing, and stress-test passes.
+
+See `FIRE_TESTING.md`.
 
 ## v0.8.5 completed
 
@@ -58,8 +83,8 @@ Recommended stabilization track:
 
 - `v0.10.x` — packaging, install rules, CMake package export, pkg-config if useful, warning cleanup, sanitizer documentation, fresh-tarball validation, and CI template.
 - `v0.11.x` — API freeze candidate and final public-header/C ABI review.
-- `v0.12.x` — release-candidate cleanup if needed.
-- `v0.13.x` — fire testing: edge cases, hostile inputs, failure semantics, sanitizer/fuzzing/stress tests, and security-boundary review.
+- `v0.12.x` — release-candidate preparation and additive-only ruling.
+- `v0.13.x` — fire testing: edge cases, hostile inputs, failure semantics, sanitizer/fuzzing/stress tests, and security-boundary review. First pass completed in v0.13.0.
 - `v1.0.0` — first stable release.
 
 See `FIRE_TESTING.md` for the v0.13 trial-by-fire checklist.

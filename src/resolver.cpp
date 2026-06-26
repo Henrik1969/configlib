@@ -105,6 +105,10 @@ ResolveResult resolve(const FactSet& facts, const PolicySet& policies) {
     std::map<std::string, std::vector<Fact>> grouped;
     for (auto fact : facts.all()) {
         if (fact.role != FactRole::Application) continue;
+        if (!fact.key.valid()) {
+            diagnostics.error("CONFIG_INVALID_KEY", "configuration fact has an invalid dotted key", fact.key, fact.source);
+            continue;
+        }
         if (fact.precedence == 0) fact.precedence = policies.precedence_for(fact.source.kind());
         grouped[fact.key.dotted()].push_back(std::move(fact));
     }

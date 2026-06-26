@@ -1,6 +1,6 @@
 # Public API map
 
-This document gives a quick orientation map for the public `configlib` API as of `v0.11.0`.
+This document gives a quick orientation map for the public `configlib` API as of `v0.13.1`.
 
 ## Core data
 
@@ -60,7 +60,7 @@ Bindings are convenience projections. They are not the source of governed truth.
 
 - `configlib.h` — opaque C ABI intended as the long-term binding surface for non-C++ languages.
 
-The v0.11 C ABI covers the non-template core: facts, policy construction, resolution, diagnostics, schema validation, access policy, store creation, transactions, scoped views, export, file/env/CLI loading, and scalar getters. C++ templates such as `StructBinding<T>` remain C++-only by design. See [`C_ABI.md`](C_ABI.md).
+The v0.12 C ABI covers the non-template core: facts, policy construction, resolution, diagnostics, schema validation, access policy, store creation, transactions, scoped views, export, file/env/CLI loading, and scalar getters. C++ templates such as `StructBinding<T>` remain C++-only by design. See [`C_ABI.md`](C_ABI.md).
 
 ## Packaging and installed consumption
 
@@ -73,7 +73,7 @@ The v0.11 C ABI covers the non-template core: facts, policy construction, resolu
 
 See [`PACKAGING.md`](PACKAGING.md) for install and consumer examples.
 
-For API freeze cleanup notes, see [`API_FREEZE_CANDIDATE.md`](API_FREEZE_CANDIDATE.md).
+For API freeze cleanup notes, see [`API_FREEZE_CANDIDATE.md`](API_FREEZE_CANDIDATE.md). For the v1 release-candidate checklist and additive-only rule, see [`RELEASE_CANDIDATE.md`](RELEASE_CANDIDATE.md).
 
 For vocabulary and conceptual definitions, see [`TERMINOLOGY.md`](TERMINOLOGY.md). For a newcomer-friendly explanation, see [`EXPLAINED_SIMPLY.md`](EXPLAINED_SIMPLY.md).
 

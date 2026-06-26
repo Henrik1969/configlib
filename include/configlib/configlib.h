@@ -20,8 +20,9 @@ extern "C" {
 #endif
 
 #define CONFIGLIB_C_VERSION_MAJOR 0
-#define CONFIGLIB_C_VERSION_MINOR 11
-#define CONFIGLIB_C_VERSION_PATCH 0
+#define CONFIGLIB_C_VERSION_MINOR 13
+#define CONFIGLIB_C_VERSION_PATCH 1
+#define CONFIGLIB_C_VERSION_STRING "0.13.1"
 
 /** Opaque mutable context holding facts and policy before resolution. */
 typedef struct configlib_ctx configlib_ctx;
@@ -82,6 +83,8 @@ typedef enum configlib_export_mode {
 int configlib_version_major(void);
 int configlib_version_minor(void);
 int configlib_version_patch(void);
+/** Returns the configlib version as a static null-terminated string. */
+const char* configlib_version_string(void);
 const char* configlib_status_name(configlib_status status);
 const char* configlib_value_type_name(configlib_value_type type);
 const char* configlib_source_kind_name(configlib_source_kind kind);

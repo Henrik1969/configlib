@@ -1,4 +1,4 @@
-# configlib v0.11.0
+# configlib v0.13.1
 
 `configlib` is a policy/fact driven configuration resolution and runtime access library for C and C++ programs.
 
@@ -6,7 +6,7 @@ It is built around a simple design law:
 
 > All inputs become facts. All behavior is governed by policy. The mechanism discovers, normalizes, resolves, validates, stores, and exposes configuration. No application meaning is hardcoded into the mechanism.
 
-v0.11.0 is a pre-freeze API cleanup release. It removes policy-owned defaults from the intended v1 surface, removes C++ implicit-fallback getter aliases, tightens same-priority conflict diagnostics, and prevents non-exportable values from leaking through redacted export modes.
+v0.13.1 is a focused fire-test follow-up release. It adds stable version-string helpers to the C++ API and C ABI after local gauntlet testing proved that binding and external-consumer smoke tests need a simple exported version string. v0.13.0 was the first trial-by-fire release. It adds hostile/edge-case testing, invalid-key rejection at the resolver and loader boundaries, and regression coverage for ambiguity, state preservation, redaction, scoped-view isolation, and stress behavior before v1.0.
 
 Important current capabilities include:
 
@@ -21,6 +21,7 @@ Important current capabilities include:
 - view example and tests
 - installed headers, libraries, CMake package files, and pkg-config metadata
 - `docs/API_FREEZE_CANDIDATE.md` as the pre-freeze ruling document
+- `docs/RELEASE_CANDIDATE.md` as the v1 release-candidate checklist and additive-work rule
 - updated documentation and changelog
 
 The important rule still holds: `ConfigStore` is the governed runtime vault; `ConfigView` is a scoped keyhole into one subtree of that vault.

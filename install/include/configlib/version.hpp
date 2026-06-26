@@ -1,8 +1,0 @@
-// SPDX-License-Identifier: MIT
-
-#pragma once
-
-#define CONFIGLIB_VERSION_MAJOR 0
-#define CONFIGLIB_VERSION_MINOR 10
-#define CONFIGLIB_VERSION_PATCH 0
-#define CONFIGLIB_VERSION_STRING "0.10.0"

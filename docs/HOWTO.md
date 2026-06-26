@@ -643,6 +643,7 @@ v0.8.x   API cleanup and documentation
 v0.9.x   C ABI parity and binding surface stabilization
 v0.10.x  install/package/build hardening
 v0.11.x  API freeze candidate
+v0.12.x  Release-candidate preparation / additive-only ruling
 v0.12.x  release-candidate cleanup if needed
 v0.13.x  trial by fire: hostile tests, sanitizer/fuzzing/stress checks
 v1.0.0   first stable dependency release

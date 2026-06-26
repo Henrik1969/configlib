@@ -6,6 +6,29 @@ The v0.13.x fire-testing series is the deliberate "try to break it" phase before
 
 This document is a roadmap and acceptance checklist. It does not add new runtime behavior by itself.
 
+
+## v0.13.1 follow-up
+
+Local release-gauntlet exploration after v0.13.0 found that external CMake/pkg-config/binding smoke tests need a stable, simple version-string symbol. v0.13.1 adds `configlib::version_string()` and `configlib_version_string()` as additive pre-v1 helpers. The exploratory gauntlet script remains external tooling for now; it is not part of the configlib release payload.
+
+## v0.13.0 status
+
+The first fire-test implementation pass added `tests/test_fire.cpp` and promoted one proven defect class into a pre-v1 fix: malformed dotted keys are now rejected by the resolver and by built-in loader boundaries instead of being allowed to enter resolved configuration silently.
+
+Validated in v0.13.0:
+
+- invalid direct fact keys produce `CONFIG_INVALID_KEY`
+- invalid file keys produce `CONFIG_FILE_BAD_KEY`
+- invalid environment-derived keys produce `CONFIG_ENV_BAD_KEY`
+- invalid CLI-mapped keys produce `CONFIG_CLI_BAD_KEY`
+- invalid internal-default keys produce `CONFIG_DEFAULT_BAD_KEY`
+- same-priority conflicting facts produce `CONFIG_AMBIGUOUS_PRECEDENCE`
+- duplicate identical same-priority facts remain deterministic
+- failed runtime transactions preserve previous store state
+- scoped views do not export similarly prefixed neighboring keys
+- secret/non-exportable values do not leak through export modes
+- a simple large-input stress case remains deterministic
+
 ## Guiding sentence
 
 > v0.13 is not about proving configlib works. It is about proving configlib fails safely, explains itself, and preserves state.

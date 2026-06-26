@@ -1,5 +1,64 @@
 # Changelog
 
+## v0.13.1
+
+Fire-test follow-up release.
+
+Added:
+
+- `configlib::version_major()`, `configlib::version_minor()`, `configlib::version_patch()`, and `configlib::version_string()` C++ helpers.
+- `CONFIGLIB_C_VERSION_STRING` and `configlib_version_string()` in the C ABI.
+- Regression coverage for C++ and C ABI version-string helpers.
+
+Fixed / clarified:
+
+- External consumer and binding smoke tests now have a stable, simple symbol to call for version validation.
+- Project version to `0.13.1`.
+- C ABI version macros to `0.13.1`.
+
+Design note: this is an additive fire-test remedy. The external fire-test harness remains outside the project for now and will later become a separate generalized tool.
+
+## v0.13.0
+
+Trial-by-fire release.
+
+Added:
+
+- `tests/test_fire.cpp`, a hostile/edge-case test suite for the v0.13 fire-testing phase.
+- Regression coverage for malformed direct facts, malformed file/env/CLI keys, same-priority ambiguity, identical duplicate facts, transaction failure state preservation, scoped-view isolation, export/redaction non-leakage, and simple stress behavior.
+
+Changed:
+
+- Project version to `0.13.0`.
+- C ABI version macros to `0.13.0`.
+- Resolver now rejects invalid dotted keys with `CONFIG_INVALID_KEY` instead of allowing malformed facts into the resolved configuration.
+- Built-in loaders now reject invalid dotted keys at the boundary with explicit diagnostics:
+  - `CONFIG_FILE_BAD_KEY`
+  - `CONFIG_ENV_BAD_KEY`
+  - `CONFIG_CLI_BAD_KEY`
+  - `CONFIG_DEFAULT_BAD_KEY`
+- Test count increased from 9 to 10.
+
+Design note: v0.13.0 is the first real fire-test pass. It keeps the post-v0.12 additive-only rule, except for correctness/safety fixes proven by hostile testing before v1.0.
+
+## v0.12.0
+
+Release-candidate preparation release.
+
+Added:
+
+- `docs/RELEASE_CANDIDATE.md`, documenting the v1 release-candidate checklist and additive-only rule after v0.12.
+- Explicit exception rule: post-v0.12 breaking changes require a correctness, safety, security, or serious usability reason proven before v1.
+- v1 gate question focused on failure behavior, hostile inputs, broken files, clumsy bindings, and trustworthiness.
+
+Changed:
+
+- Project version to `0.12.0`.
+- C ABI version macros to `0.12.0`.
+- README, roadmap, public API map, and API stability documentation now point to the release-candidate track.
+
+Design note: v0.12.0 is behavior-neutral. It marks the public-surface transition point: later work should be additive unless fire testing proves a pre-v1 correction is necessary.
+
 ## v0.11.0
 
 Pre-freeze API cleanup and audit-remediation release.

@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(configlib
-    VERSION 0.11.0
+    VERSION 0.13.1
     DESCRIPTION "Policy and fact driven configuration resolution library"
     LANGUAGES C CXX
 )
@@ -235,6 +235,10 @@ if(CONFIGLIB_BUILD_TESTS)
     add_executable(configlib_tests_api_consistency tests/test_api_consistency.cpp)
     target_link_libraries(configlib_tests_api_consistency PRIVATE ${CONFIGLIB_LINK_TARGET})
     add_test(NAME configlib_tests_api_consistency COMMAND configlib_tests_api_consistency)
+
+    add_executable(configlib_tests_fire tests/test_fire.cpp)
+    target_link_libraries(configlib_tests_fire PRIVATE ${CONFIGLIB_LINK_TARGET})
+    add_test(NAME configlib_tests_fire COMMAND configlib_tests_fire)
 
     add_executable(configlib_tests_c tests/test_c_api.c)
     target_link_libraries(configlib_tests_c PRIVATE ${CONFIGLIB_LINK_TARGET})
