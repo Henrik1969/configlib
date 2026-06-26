@@ -12,6 +12,16 @@ KeyPath::KeyPath(std::vector<std::string> parts) : parts_(std::move(parts)) { re
 const std::vector<std::string>& KeyPath::parts() const { return parts_; }
 const std::string& KeyPath::dotted() const { return dotted_; }
 bool KeyPath::empty() const { return dotted_.empty(); }
+bool KeyPath::valid() const { return valid_dotted(dotted_); }
+
+bool KeyPath::valid_dotted(std::string_view dotted) {
+    if (dotted.empty()) return true;
+    if (dotted.front() == '.' || dotted.back() == '.') return false;
+    for (std::size_t i = 1; i < dotted.size(); ++i) {
+        if (dotted[i] == '.' && dotted[i - 1] == '.') return false;
+    }
+    return true;
+}
 
 void KeyPath::rebuild_dotted() {
     dotted_.clear();

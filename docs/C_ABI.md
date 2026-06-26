@@ -124,3 +124,7 @@ v0.9.0 brings the C ABI much closer to the non-template C++ feature set:
 - export and diagnostics
 
 C++ template projections such as `StructBinding<T>` remain C++-only by design.
+
+## Key validation
+
+The C ABI exposes `configlib_key_is_valid(const char* key)` so binding layers and tools can reject malformed dotted keys before attempting mutation or resolution. Empty keys are valid for root-style contexts; dotted keys with empty path segments such as `.a`, `a.`, or `a..b` are invalid.

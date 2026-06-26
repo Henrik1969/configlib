@@ -45,14 +45,6 @@ KeyPolicy& PolicySet::optional(KeyPath key_path, ValueType type) {
     return kp;
 }
 
-KeyPolicy& PolicySet::defaulted(KeyPath key_path, Value value) {
-    auto& kp = key(std::move(key_path));
-    kp.expected_type = value.type();
-    kp.missing = MissingPolicy::UseDefault;
-    kp.default_value = std::move(value);
-    return kp;
-}
-
 PolicySet& PolicySet::allowed_strings(KeyPath key_path, std::vector<std::string> values) {
     auto& kp = key(std::move(key_path));
     kp.allowed_strings.clear();
@@ -96,7 +88,6 @@ const char* missing_policy_name(MissingPolicy policy) {
     switch (policy) {
         case MissingPolicy::Optional: return "optional";
         case MissingPolicy::Required: return "required";
-        case MissingPolicy::UseDefault: return "use-default";
     }
     return "unknown";
 }

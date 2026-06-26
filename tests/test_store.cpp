@@ -33,7 +33,7 @@ int main() {
     auto store = ConfigStore::from_result(std::move(result), policies, access);
 
     REQUIRE(store.get_string(KeyPath("logging.level")) == "warn");
-    REQUIRE(store.get_int(KeyPath("server.port")) == 8080);
+    REQUIRE(store.get_integer_or(KeyPath("server.port"), 0) == 8080);
 
     auto tx = store.begin_transaction();
     tx.set(KeyPath("logging.level"), Value("trace"));
@@ -54,7 +54,7 @@ int main() {
     auto denied = store.begin_transaction();
     denied.set(KeyPath("server.port"), Value(9000));
     REQUIRE(!denied.commit());
-    REQUIRE(store.get_int(KeyPath("server.port")) == 8080);
+    REQUIRE(store.get_integer_or(KeyPath("server.port"), 0) == 8080);
 
     auto reset_base = store.begin_transaction();
     reset_base.reset_to_base(KeyPath("logging.level"));
@@ -74,6 +74,23 @@ int main() {
 
     const auto effective = store.export_config();
     REQUIRE(effective.find("auth.token") == std::string::npos);
+
+
+    {
+        FactSet export_facts;
+        export_facts.add_default(KeyPath("public.value"), Value("hello"));
+        export_facts.add_default(KeyPath("private.value"), Value("must-not-leak"));
+        PolicySet export_policies;
+        auto export_result = resolve(export_facts, export_policies);
+        REQUIRE(export_result.ok());
+        AccessPolicy export_access;
+        export_access.exportable(KeyPath("private.value"), false);
+        auto export_store = ConfigStore::from_result(std::move(export_result), export_policies, export_access);
+        const auto redacted = export_store.export_config(ExportMode::EffectiveRedacted);
+        REQUIRE(redacted.find("public.value = hello") != std::string::npos);
+        REQUIRE(redacted.find("private.value") == std::string::npos);
+        REQUIRE(redacted.find("must-not-leak") == std::string::npos);
+    }
 
     return EXIT_SUCCESS;
 }

@@ -54,7 +54,7 @@ Query values:
 
 ```cpp
 auto level = store.get_string(KeyPath("logging.level"), "info");
-auto port = store.get_int(KeyPath("server.port"), 8080);
+auto port = store.get_integer_or(KeyPath("server.port"), 8080);
 ```
 
 ### `AccessPolicy`

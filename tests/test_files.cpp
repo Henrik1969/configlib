@@ -45,8 +45,8 @@ int main() {
     auto result = resolve(file_report.facts, policies);
     REQUIRE(result.ok());
     REQUIRE(result.config().get_string(KeyPath("logging.level")) == "debug");
-    REQUIRE(result.config().get_int(KeyPath("server.port")) == 4444);
-    REQUIRE(result.config().get_bool(KeyPath("feature.enabled")) == true);
+    REQUIRE(result.config().get_integer_or(KeyPath("server.port"), 0) == 4444);
+    REQUIRE(result.config().get_boolean_or(KeyPath("feature.enabled"), false) == true);
 
     FileDiscoveryPolicy discovery;
     discovery.enabled()
@@ -73,7 +73,7 @@ int main() {
     auto fallback_result = resolve(fallback_report.load.facts, policies);
     REQUIRE(fallback_result.ok());
     REQUIRE(fallback_result.config().get_string(KeyPath("logging.level")) == "info");
-    REQUIRE(fallback_result.config().get_int(KeyPath("server.port")) == 8080);
+    REQUIRE(fallback_result.config().get_integer_or(KeyPath("server.port"), 0) == 8080);
 
     auto bad_report = load_config_file((tmpdir / "does-not-exist.conf").string(), policies);
     REQUIRE(!bad_report.ok());

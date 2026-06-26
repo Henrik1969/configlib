@@ -215,8 +215,8 @@ int main(int argc, char** argv) {
     configlib_ctx* ctx = configlib_create();
     if (!ctx) return 1;
 
-    configlib_default_string(ctx, "xyz.logging.level", "info");
-    configlib_default_int(ctx, "xyz.server.port", 8080);
+    configlib_internal_default_string(ctx, "xyz.logging.level", "info");
+    configlib_internal_default_int(ctx, "xyz.server.port", 8080);
 
     configlib_set_source_precedence(ctx, CONFIGLIB_SOURCE_INTERNAL_DEFAULT, 10);
     configlib_set_source_precedence(ctx, CONFIGLIB_SOURCE_ENVIRONMENT, 50);
@@ -280,8 +280,8 @@ lib = CDLL("./build/libconfiglib.so")
 lib.configlib_create.restype = c_void_p
 lib.configlib_destroy.argtypes = [c_void_p]
 
-lib.configlib_default_string.argtypes = [c_void_p, c_char_p, c_char_p]
-lib.configlib_default_int.argtypes = [c_void_p, c_char_p, c_longlong]
+lib.configlib_internal_default_string.argtypes = [c_void_p, c_char_p, c_char_p]
+lib.configlib_internal_default_int.argtypes = [c_void_p, c_char_p, c_longlong]
 lib.configlib_require.argtypes = [c_void_p, c_char_p, c_int]
 lib.configlib_set_source_precedence.argtypes = [c_void_p, c_int, c_int]
 lib.configlib_add_string.argtypes = [c_void_p, c_char_p, c_char_p, c_int, c_char_p]
@@ -297,8 +297,8 @@ lib.configlib_result_destroy.argtypes = [c_void_p]
 
 ctx = lib.configlib_create()
 try:
-    lib.configlib_default_string(ctx, b"xyz.logging.level", b"info")
-    lib.configlib_default_int(ctx, b"xyz.server.port", 8080)
+    lib.configlib_internal_default_string(ctx, b"xyz.logging.level", b"info")
+    lib.configlib_internal_default_int(ctx, b"xyz.server.port", 8080)
 
     lib.configlib_set_source_precedence(ctx, CONFIGLIB_SOURCE_INTERNAL_DEFAULT, 10)
     lib.configlib_set_source_precedence(ctx, CONFIGLIB_SOURCE_ENVIRONMENT, 50)
@@ -357,7 +357,7 @@ const CONFIGLIB_SOURCE_CLI: c_int = 3;
 extern "C" {
     fn configlib_create() -> *mut ConfiglibCtx;
     fn configlib_destroy(ctx: *mut ConfiglibCtx);
-    fn configlib_default_string(ctx: *mut ConfiglibCtx, key: *const c_char, value: *const c_char) -> c_int;
+    fn configlib_internal_default_string(ctx: *mut ConfiglibCtx, key: *const c_char, value: *const c_char) -> c_int;
     fn configlib_require(ctx: *mut ConfiglibCtx, key: *const c_char, ty: c_int) -> c_int;
     fn configlib_add_string(
         ctx: *mut ConfiglibCtx,
@@ -386,7 +386,7 @@ fn main() {
         let cli_value = CString::new("debug").unwrap();
         let source = CString::new("--log-level").unwrap();
 
-        configlib_default_string(ctx, key.as_ptr(), default_value.as_ptr());
+        configlib_internal_default_string(ctx, key.as_ptr(), default_value.as_ptr());
         configlib_require(ctx, key.as_ptr(), CONFIGLIB_VALUE_STRING);
         configlib_add_string(ctx, key.as_ptr(), cli_value.as_ptr(), CONFIGLIB_SOURCE_CLI, source.as_ptr());
 
@@ -420,7 +420,7 @@ pub fn main() !void {
     const ctx = c.configlib_create() orelse return error.CreateFailed;
     defer c.configlib_destroy(ctx);
 
-    _ = c.configlib_default_string(ctx, "xyz.logging.level", "info");
+    _ = c.configlib_internal_default_string(ctx, "xyz.logging.level", "info");
     _ = c.configlib_require(ctx, "xyz.logging.level", c.CONFIGLIB_VALUE_STRING);
     _ = c.configlib_add_string(
         ctx,
@@ -466,7 +466,7 @@ typedef enum configlib_status {
 
 configlib_ctx* configlib_create(void);
 void configlib_destroy(configlib_ctx* ctx);
-int configlib_default_string(configlib_ctx* ctx, const char* key, const char* value);
+int configlib_internal_default_string(configlib_ctx* ctx, const char* key, const char* value);
 int configlib_require(configlib_ctx* ctx, const char* key, int type);
 int configlib_add_string(configlib_ctx* ctx, const char* key, const char* value, int kind, const char* source_name);
 int configlib_resolve(configlib_ctx* ctx, configlib_result** out_result);
@@ -478,7 +478,7 @@ void configlib_result_destroy(configlib_result* result);
 local lib = ffi.load("configlib")
 local ctx = lib.configlib_create()
 
-lib.configlib_default_string(ctx, "xyz.logging.level", "info")
+lib.configlib_internal_default_string(ctx, "xyz.logging.level", "info")
 lib.configlib_require(ctx, "xyz.logging.level", 4) -- CONFIGLIB_VALUE_STRING
 lib.configlib_add_string(ctx, "xyz.logging.level", "debug", 3, "--log-level")
 

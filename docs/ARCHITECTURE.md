@@ -118,7 +118,7 @@ Current policy areas:
 - source precedence
 - required keys
 - optional keys
-- defaulted keys
+- required and optional keys
 - expected scalar type
 - string allow-list
 - integer min/max range

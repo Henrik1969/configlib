@@ -60,5 +60,29 @@ int main() {
         REQUIRE(!result.ok());
     }
 
+
+    {
+        FactSet facts;
+        facts.add(KeyPath("logging.level"), Value("debug"), Source::file("a.conf"), 30);
+        facts.add(KeyPath("logging.level"), Value("warn"), Source::file("b.conf"), 30);
+        PolicySet policy;
+        policy.require(KeyPath("logging.level"), ValueType::String);
+        auto result = resolve(facts, policy);
+        REQUIRE(!result.ok());
+        REQUIRE(result.diagnostics().format().find("CONFIG_AMBIGUOUS_PRECEDENCE") != std::string::npos);
+    }
+
+    {
+        FactSet facts;
+        facts.add(KeyPath("logging.level"), Value("debug"), Source::file("a.conf"), 30);
+        facts.add(KeyPath("logging.level"), Value("warn"), Source::file("b.conf"), 30);
+        PolicySet policy;
+        policy.require(KeyPath("logging.level"), ValueType::String);
+        policy.conflict(KeyPath("logging.level"), ConflictPolicy::LastWins);
+        auto result = resolve(facts, policy);
+        REQUIRE(result.ok());
+        REQUIRE(result.config().get_string(KeyPath("logging.level")) == "warn");
+    }
+
     return EXIT_SUCCESS;
 }

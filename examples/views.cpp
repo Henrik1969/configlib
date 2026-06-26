@@ -29,7 +29,7 @@ int main() {
     auto lexer = store.view(KeyPath("flowmini.lex"));
     auto diagnostics = store.view(KeyPath("flowmini.diagnostics"));
 
-    std::cout << "lexer.strict_utf8 = " << (lexer.get_bool_or(KeyPath("strict_utf8"), true) ? "true" : "false") << '\n';
+    std::cout << "lexer.strict_utf8 = " << (lexer.get_boolean_or(KeyPath("strict_utf8"), true) ? "true" : "false") << '\n';
     std::cout << "diagnostics.format = " << diagnostics.get_string_or(KeyPath("format"), "human") << '\n';
 
     std::cout << "\nDiagnostic subtree as local export:\n";

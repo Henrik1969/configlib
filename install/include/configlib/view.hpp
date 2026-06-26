@@ -40,6 +40,12 @@ public:
     [[nodiscard]] double get_floating_or(const KeyPath& local_key, double fallback) const;
 
     [[nodiscard]] std::optional<Value> get(const KeyPath& local_key) const;
+    [[nodiscard]] std::int64_t get_int(const KeyPath& local_key, std::int64_t fallback = 0) const;
+    [[nodiscard]] bool get_bool(const KeyPath& local_key, bool fallback = false) const;
+    [[nodiscard]] double get_double(const KeyPath& local_key, double fallback = 0.0) const;
+    [[nodiscard]] std::int64_t get_int_or(const KeyPath& local_key, std::int64_t fallback) const;
+    [[nodiscard]] bool get_bool_or(const KeyPath& local_key, bool fallback) const;
+    [[nodiscard]] double get_double_or(const KeyPath& local_key, double fallback) const;
 
     [[nodiscard]] std::vector<std::string> keys() const;
     [[nodiscard]] std::string explain(const KeyPath& local_key) const;

@@ -81,7 +81,7 @@ Policy collection:
 ```cpp
 policy.set_precedence(SourceKind::Environment, 50);
 policy.require(KeyPath("server.port"), ValueType::Int);
-policy.defaulted(KeyPath("server.host"), Value("127.0.0.1"));
+facts.add_default(KeyPath("server.host"), Value("127.0.0.1"));
 policy.allowed_strings(KeyPath("logging.level"), {"debug", "info", "warn"});
 policy.int_range(KeyPath("server.port"), 1, 65535);
 policy.conflict(KeyPath("feature.x"), ConflictPolicy::RejectConflict);
@@ -117,7 +117,7 @@ Minimal example:
 int main(void) {
     configlib_ctx* ctx = configlib_create();
 
-    configlib_default_string(ctx, "logging.level", "info");
+    configlib_internal_default_string(ctx, "logging.level", "info");
     configlib_add_string(ctx, "logging.level", "trace", CONFIGLIB_SOURCE_CLI, "--log-level");
     configlib_require(ctx, "logging.level", CONFIGLIB_VALUE_STRING);
 
@@ -304,7 +304,7 @@ Query values:
 
 ```cpp
 auto level = store.get_string(KeyPath("logging.level"), "info");
-auto port = store.get_int(KeyPath("server.port"), 8080);
+auto port = store.get_integer_or(KeyPath("server.port"), 8080);
 ```
 
 Govern access:
@@ -374,9 +374,6 @@ ConfigView view(KeyPath prefix) const;
 bool contains(const KeyPath& local_key) const;
 std::optional<Value> get(const KeyPath& local_key) const;
 std::string get_string(const KeyPath& local_key, std::string fallback = {}) const;
-std::int64_t get_int(const KeyPath& local_key, std::int64_t fallback = 0) const;
-bool get_bool(const KeyPath& local_key, bool fallback = false) const;
-double get_double(const KeyPath& local_key, double fallback = 0.0) const;
 ```
 
 ### Fallback helpers

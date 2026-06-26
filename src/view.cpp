@@ -105,30 +105,6 @@ double ConfigView::get_floating_or(const KeyPath& local_key, double fallback) co
 
 std::optional<Value> ConfigView::get(const KeyPath& local_key) const { return get_value(local_key); }
 
-std::int64_t ConfigView::get_int(const KeyPath& local_key, std::int64_t fallback) const {
-    return get_integer_or(local_key, fallback);
-}
-
-bool ConfigView::get_bool(const KeyPath& local_key, bool fallback) const {
-    return get_boolean_or(local_key, fallback);
-}
-
-double ConfigView::get_double(const KeyPath& local_key, double fallback) const {
-    return get_floating_or(local_key, fallback);
-}
-
-std::int64_t ConfigView::get_int_or(const KeyPath& local_key, std::int64_t fallback) const {
-    return get_integer_or(local_key, fallback);
-}
-
-bool ConfigView::get_bool_or(const KeyPath& local_key, bool fallback) const {
-    return get_boolean_or(local_key, fallback);
-}
-
-double ConfigView::get_double_or(const KeyPath& local_key, double fallback) const {
-    return get_floating_or(local_key, fallback);
-}
-
 std::vector<std::string> ConfigView::keys() const {
     std::set<std::string> local_keys;
     for (const auto& [dotted, item] : store_->runtime_overrides_) {
@@ -157,7 +133,7 @@ std::string ConfigView::export_config(ExportMode mode) const {
         const auto dotted = key.dotted();
         if (!owns_full_key(dotted)) return;
         if (emitted.contains(dotted)) return;
-        if (!store_->access_.is_exportable(key) && mode != ExportMode::EffectiveRedacted && mode != ExportMode::ChangedOnlyRedacted && mode != ExportMode::RuntimeChangesOnlyRedacted) return;
+        if (!store_->access_.is_exportable(key)) return;
         write_view_entry(out, dotted, value, store_->access_.is_secret(key));
         emitted.insert(dotted);
     };
@@ -187,7 +163,7 @@ std::string ConfigView::export_local_config(ExportMode mode) const {
         if (!owns_full_key(dotted)) return;
         const auto local = localize(dotted);
         if (emitted.contains(local)) return;
-        if (!store_->access_.is_exportable(key) && mode != ExportMode::EffectiveRedacted && mode != ExportMode::ChangedOnlyRedacted && mode != ExportMode::RuntimeChangesOnlyRedacted) return;
+        if (!store_->access_.is_exportable(key)) return;
         write_view_entry(out, local, value, store_->access_.is_secret(key));
         emitted.insert(local);
     };

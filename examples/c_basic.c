@@ -9,7 +9,7 @@ int main(void) {
     configlib_ctx* ctx = configlib_create();
     if (!ctx) return 1;
 
-    configlib_default_string(ctx, "logging.level", "info");
+    configlib_internal_default_string(ctx, "logging.level", "info");
     configlib_add_string(ctx, "logging.level", "warn", CONFIGLIB_SOURCE_FILE, "./app.conf");
     configlib_add_string(ctx, "logging.level", "debug", CONFIGLIB_SOURCE_ENVIRONMENT, "MYAPP_LOGGING_LEVEL");
     configlib_add_string(ctx, "logging.level", "trace", CONFIGLIB_SOURCE_CLI, "--log-level");

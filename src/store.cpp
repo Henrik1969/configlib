@@ -317,14 +317,6 @@ double ConfigStore::get_floating_or(const KeyPath& key, double fallback) const {
 
 std::optional<Value> ConfigStore::get(const KeyPath& key) const { return get_value(key); }
 
-std::int64_t ConfigStore::get_int(const KeyPath& key, std::int64_t fallback) const {
-    return get_integer_or(key, fallback);
-}
-
-bool ConfigStore::get_bool(const KeyPath& key, bool fallback) const {
-    return get_boolean_or(key, fallback);
-}
-
 bool ConfigStore::has_runtime_change(const KeyPath& key) const {
     const auto dotted = key.dotted();
     return runtime_overrides_.contains(dotted) || runtime_erases_.contains(dotted);
@@ -356,7 +348,7 @@ std::string ConfigStore::export_config(ExportMode mode) const {
     auto emit_key = [&](const KeyPath& key, const Value& value) {
         const auto dotted = key.dotted();
         if (emitted.contains(dotted)) return;
-        if (!access_.is_exportable(key) && mode != ExportMode::EffectiveRedacted && mode != ExportMode::ChangedOnlyRedacted && mode != ExportMode::RuntimeChangesOnlyRedacted) return;
+        if (!access_.is_exportable(key)) return;
         write_entry(out, dotted, value, access_.is_secret(key));
         emitted.insert(dotted);
     };

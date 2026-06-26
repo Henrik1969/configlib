@@ -3,7 +3,6 @@
 #pragma once
 
 #include <string>
-#include <string_view>
 #include <vector>
 
 namespace configlib {
@@ -21,9 +20,6 @@ public:
     [[nodiscard]] const std::vector<std::string>& parts() const;
     [[nodiscard]] const std::string& dotted() const;
     [[nodiscard]] bool empty() const;
-    [[nodiscard]] bool valid() const;
-
-    [[nodiscard]] static bool valid_dotted(std::string_view dotted);
 
     friend bool operator==(const KeyPath& lhs, const KeyPath& rhs);
     friend bool operator<(const KeyPath& lhs, const KeyPath& rhs);

@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 #define CONFIGLIB_C_VERSION_MAJOR 0
-#define CONFIGLIB_C_VERSION_MINOR 11
+#define CONFIGLIB_C_VERSION_MINOR 9
 #define CONFIGLIB_C_VERSION_PATCH 0
 
 /** Opaque mutable context holding facts and policy before resolution. */
@@ -86,7 +86,6 @@ const char* configlib_status_name(configlib_status status);
 const char* configlib_value_type_name(configlib_value_type type);
 const char* configlib_source_kind_name(configlib_source_kind kind);
 const char* configlib_export_mode_name(configlib_export_mode mode);
-int configlib_key_is_valid(const char* key);
 
 /** Creates a new empty configlib context. Destroy with configlib_destroy(). */
 configlib_ctx* configlib_create(void);
@@ -99,6 +98,10 @@ configlib_status configlib_require(configlib_ctx* ctx, const char* key, configli
 configlib_status configlib_optional(configlib_ctx* ctx, const char* key, configlib_value_type type);
 configlib_status configlib_allowed_string(configlib_ctx* ctx, const char* key, const char* value);
 configlib_status configlib_int_range(configlib_ctx* ctx, const char* key, int64_t min_value, int64_t max_value);
+configlib_status configlib_default_string(configlib_ctx* ctx, const char* key, const char* value);
+configlib_status configlib_default_int(configlib_ctx* ctx, const char* key, int64_t value);
+configlib_status configlib_default_bool(configlib_ctx* ctx, const char* key, int value);
+configlib_status configlib_default_double(configlib_ctx* ctx, const char* key, double value);
 
 configlib_status configlib_add_string(configlib_ctx* ctx, const char* key, const char* value, configlib_source_kind kind, const char* source_name);
 configlib_status configlib_add_int(configlib_ctx* ctx, const char* key, int64_t value, configlib_source_kind kind, const char* source_name);

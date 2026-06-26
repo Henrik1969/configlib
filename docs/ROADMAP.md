@@ -1,5 +1,14 @@
 # Roadmap
 
+## v0.11.0 completed
+
+- Performed the pre-freeze tight-comb API cleanup pass.
+- Removed policy-owned defaults from the intended v1 surface; defaults are facts.
+- Removed C++ implicit-fallback getter aliases from the intended v1 surface.
+- Made same-priority competing facts produce explicit diagnostics under the default conflict policy.
+- Tightened redacted export semantics so non-exportable values never leak through redacted modes.
+- Added `docs/API_FREEZE_CANDIDATE.md` as the ruling document for the next freeze stage.
+
 ## v0.10.0 completed
 
 - Added CMake install rules for headers and enabled static/shared library targets.

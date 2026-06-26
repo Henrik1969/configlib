@@ -77,6 +77,22 @@ Fact choose_candidate(std::vector<Fact> candidates, ConflictPolicy conflict, Dia
         }
     }
 
+    if (conflict == ConflictPolicy::HighestPrecedenceWins) {
+        const auto top_precedence = candidates.front().precedence;
+        const auto& first_top = candidates.front();
+        for (const auto& candidate : candidates) {
+            if (candidate.precedence != top_precedence) break;
+            if (!same_value(first_top.value, candidate.value)) {
+                diagnostics.error(
+                    "CONFIG_AMBIGUOUS_PRECEDENCE",
+                    "same-priority facts disagree; set an explicit conflict policy or source precedence",
+                    candidate.key,
+                    candidate.source
+                );
+            }
+        }
+    }
+
     return candidates.front();
 }
 

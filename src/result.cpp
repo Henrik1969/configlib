@@ -69,18 +69,6 @@ double ResolvedConfig::get_floating_or(const KeyPath& key, double fallback) cons
 
 std::optional<Value> ResolvedConfig::get(const KeyPath& key) const { return get_value(key); }
 
-std::int64_t ResolvedConfig::get_int(const KeyPath& key, std::int64_t fallback) const {
-    return get_integer_or(key, fallback);
-}
-
-bool ResolvedConfig::get_bool(const KeyPath& key, bool fallback) const {
-    return get_boolean_or(key, fallback);
-}
-
-double ResolvedConfig::get_double(const KeyPath& key, double fallback) const {
-    return get_floating_or(key, fallback);
-}
-
 const ResolvedEntry* ResolvedConfig::explain(const KeyPath& key) const {
     auto it = entries_.find(key.dotted());
     if (it == entries_.end()) return nullptr;

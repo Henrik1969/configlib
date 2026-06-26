@@ -127,15 +127,15 @@ The loader layer exists because real programs need outside-world intake, but thi
 There are now two useful forms of defaults:
 
 ```text
-PolicySet::defaulted(...)
+FactSet::add_default(...)
 InternalDefaultsProvider
 ```
 
-`PolicySet::defaulted(...)` is a validation/resolution policy: if the key is absent, synthesize a default during resolution.
+`FactSet::add_default(...)` is a validation/resolution policy: if the key is absent, synthesize a default during resolution.
 
 `InternalDefaultsProvider` is an intake provider: it emits ordinary internal-default facts before resolution.
 
-The provider path gives better provenance because the default appears in the candidate list. The policy default path is still useful for compact required/defaulted declarations.
+Defaults are facts. This keeps provenance explicit and avoids a second source of truth inside policy.
 
 ## Environment variables are not magic globals
 

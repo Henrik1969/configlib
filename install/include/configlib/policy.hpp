@@ -17,7 +17,8 @@ namespace configlib {
 /// Legacy/simple policy for missing keys during resolution.
 enum class MissingPolicy {
     Optional,
-    Required
+    Required,
+    UseDefault
 };
 
 /// Policy for resolving multiple candidate facts for one key.
@@ -37,6 +38,7 @@ struct KeyPolicy {
     std::optional<ValueType> expected_type;
     MissingPolicy missing{MissingPolicy::Optional};
     ConflictPolicy conflict{ConflictPolicy::HighestPrecedenceWins};
+    std::optional<Value> default_value;
     std::set<std::string> allowed_strings;
     std::optional<std::int64_t> min_int;
     std::optional<std::int64_t> max_int;
@@ -56,6 +58,7 @@ public:
     KeyPolicy& key(KeyPath key);
     KeyPolicy& require(KeyPath key, ValueType type);
     KeyPolicy& optional(KeyPath key, ValueType type);
+    KeyPolicy& defaulted(KeyPath key, Value value);
 
     PolicySet& allowed_strings(KeyPath key, std::vector<std::string> values);
     PolicySet& int_range(KeyPath key, std::int64_t min_value, std::int64_t max_value);

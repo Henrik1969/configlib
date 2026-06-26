@@ -39,8 +39,8 @@ int main() {
     REQUIRE(logging.contains(KeyPath("level")));
     REQUIRE(!logging.contains(KeyPath("server.port")));
     REQUIRE(logging.get_string(KeyPath("level")) == "debug");
-    REQUIRE(logging.get_bool(KeyPath("color")) == true);
-    REQUIRE(logging.get_int_or(KeyPath("missing"), 42) == 42);
+    REQUIRE(logging.get_boolean_or(KeyPath("color"), false) == true);
+    REQUIRE(logging.get_integer_or(KeyPath("missing"), 42) == 42);
     REQUIRE(logging.get_string_or(KeyPath("missing"), "fallback") == "fallback");
 
     auto keys = logging.keys();
@@ -78,7 +78,7 @@ int main() {
 
     auto root = store.view(KeyPath(""));
     REQUIRE(root.contains(KeyPath("server.port")));
-    REQUIRE(root.get_int(KeyPath("server.port")) == 8080);
+    REQUIRE(root.get_integer_or(KeyPath("server.port"), 0) == 8080);
 
     return EXIT_SUCCESS;
 }

@@ -59,9 +59,9 @@ Read helpers:
 view.contains(KeyPath("level"));
 view.get(KeyPath("level"));
 view.get_string(KeyPath("level"));
-view.get_int(KeyPath("port"));
-view.get_bool(KeyPath("color"));
-view.get_double(KeyPath("scale"));
+view.get_integer(KeyPath("port"));
+view.get_boolean(KeyPath("color"));
+view.get_floating(KeyPath("scale"));
 ```
 
 Fallback helpers:

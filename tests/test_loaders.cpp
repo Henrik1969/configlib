@@ -65,8 +65,8 @@ int main() {
     auto result = resolve(facts, policies);
     REQUIRE(result.ok());
     REQUIRE(result.config().get_string(KeyPath("logging.level")) == "trace");
-    REQUIRE(result.config().get_int(KeyPath("server.port")) == 10001);
-    REQUIRE(result.config().get_bool(KeyPath("feature.enabled")) == true);
+    REQUIRE(result.config().get_integer_or(KeyPath("server.port"), 0) == 10001);
+    REQUIRE(result.config().get_boolean_or(KeyPath("feature.enabled"), false) == true);
 
     auto bad_env = load_environment(env_policy, policies, {{"MYAPP_SERVER_PORT", "not-int"}});
     REQUIRE(!bad_env.ok());

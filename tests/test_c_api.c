@@ -12,12 +12,13 @@
 
 int main(void) {
     REQUIRE(configlib_version_major() == 0);
-    REQUIRE(configlib_version_minor() == 10);
+    REQUIRE(configlib_version_minor() == 11);
     REQUIRE(configlib_version_patch() == 0);
 
     configlib_ctx* ctx = configlib_create();
     REQUIRE(ctx != NULL);
 
+    REQUIRE(configlib_internal_default_string(ctx, "logging..level", "info") == CONFIGLIB_INVALID_ARGUMENT);
     REQUIRE_OK(configlib_internal_default_string(ctx, "logging.level", "info"));
     REQUIRE_OK(configlib_add_string(ctx, "logging.level", "debug", CONFIGLIB_SOURCE_ENVIRONMENT, "MYAPP_LOGGING_LEVEL"));
     REQUIRE_OK(configlib_add_string(ctx, "logging.level", "trace", CONFIGLIB_SOURCE_CLI, "--log-level"));
@@ -83,7 +84,7 @@ int main(void) {
     const char* exported = configlib_store_export(store, CONFIGLIB_EXPORT_EFFECTIVE_REDACTED);
     REQUIRE(exported != NULL);
     REQUIRE(strstr(exported, "logging.level = trace") != NULL);
-    REQUIRE(strstr(exported, "secret.token = <redacted>") != NULL);
+    REQUIRE(strstr(exported, "secret.token") == NULL);
 
     configlib_transaction* tx = NULL;
     REQUIRE_OK(configlib_store_begin_transaction(store, &tx));

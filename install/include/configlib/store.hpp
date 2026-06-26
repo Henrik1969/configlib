@@ -27,7 +27,9 @@ enum class ExportMode {
     ChangedOnly,
     ChangedOnlyRedacted,
     RuntimeChangesOnly,
-    RuntimeChangesOnlyRedacted
+    RuntimeChangesOnlyRedacted,
+
+    Redacted = EffectiveRedacted
 };
 
 /// Runtime access/export rule for one key.
@@ -126,6 +128,8 @@ public:
     [[nodiscard]] double get_floating_or(const KeyPath& key, double fallback) const;
 
     [[nodiscard]] std::optional<Value> get(const KeyPath& key) const;
+    [[nodiscard]] std::int64_t get_int(const KeyPath& key, std::int64_t fallback = 0) const;
+    [[nodiscard]] bool get_bool(const KeyPath& key, bool fallback = false) const;
 
     [[nodiscard]] bool has_runtime_change(const KeyPath& key) const;
     [[nodiscard]] std::string explain(const KeyPath& key) const;

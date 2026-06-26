@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.11.0
+
+Pre-freeze API cleanup and audit-remediation release.
+
+Added:
+- `docs/API_FREEZE_CANDIDATE.md` documenting the additive-only rule intended after the freeze candidate.
+- Regression coverage for same-priority conflicting facts and non-exportable redacted export behavior.
+
+Changed:
+- Project version to `0.11.0`.
+- C ABI version macros to `0.11.0`.
+- Same-priority conflicting facts under `HighestPrecedenceWins` now emit `CONFIG_AMBIGUOUS_PRECEDENCE` instead of silently relying on insertion order.
+- Redacted export modes no longer export keys marked `exportable=false`; non-exportable means not exported.
+- Documentation now states that defaults are facts, not policy-owned synthesized values.
+
+Removed before v1 freeze:
+- `PolicySet::defaulted(...)`, `MissingPolicy::UseDefault`, and policy-owned default storage.
+- C policy-default helpers `configlib_default_*`; use `configlib_internal_default_*` to add real default facts.
+- C++ shorthand implicit-fallback getter aliases such as `get_int`, `get_bool`, `get_double`, and view `get_*_or` aliases. Use canonical optional getters or explicit `_or` helpers instead.
+
 ## v0.10.0
 
 Packaging/install hardening release.
